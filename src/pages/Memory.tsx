@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-/**
- * Тип карточки
- */
+// Тип карточки
 type Card = {
   id: number
   value: string
@@ -10,9 +9,7 @@ type Card = {
   isMatched: boolean
 }
 
-/**
- * Набор символов
- */
+// Набор символов
 const EMOJIS = [
   '🍎',
   '🚗',
@@ -34,9 +31,7 @@ const EMOJIS = [
   '🎯',
 ]
 
-/**
- * Генерация карточек под размер поля
- */
+// Генерация карточек под размер поля
 const generateCards = (size: number): Card[] => {
   const pairsCount = (size * size) / 2
 
@@ -54,53 +49,35 @@ const generateCards = (size: number): Card[] => {
 }
 
 export default function Memory() {
-  /**
-   * сложность игры
-   */
+  // Сложность игры
   const [difficulty, setDifficulty] = useState<'easy' | 'medium'>('easy')
 
-  /**
-   * карточки
-   */
+  // Карточки
   const [cards, setCards] = useState<Card[]>([])
 
-  /**
-   * первая карточка
-   */
+  // Первая карточка
   const [firstCard, setFirstCard] = useState<Card | null>(null)
 
-  /**
-   * уже увиденные карточки
-   */
+  // Уже увиденные карточки
   const [seenCards, setSeenCards] = useState<number[]>([])
   const [firstCardWasSeen, setFirstCardWasSeen] = useState(false)
 
-  /**
-   * блокировка кликов
-   */
+  // Блокировка кликов
   const [disabled, setDisabled] = useState(false)
 
-  /**
-   * счёт
-   */
+  // Счёт
   const [score, setScore] = useState(0)
 
-  /**
-   * popup очков
-   */
+  // Popup очков
   const [scorePopup, setScorePopup] = useState('')
 
-  /**
-   * размеры поля
-   */
+  // Размеры поля
   const SIZE_MAP = {
     easy: 4,
     medium: 6,
   }
 
-  /**
-   * пересоздание игры при смене сложности
-   */
+  // Пересоздание игры при смене сложности
   useEffect(() => {
     const size = SIZE_MAP[difficulty]
 
@@ -112,15 +89,13 @@ export default function Memory() {
     setScorePopup('')
   }, [difficulty])
 
-  /**
-   * клик по карточке
-   */
+  // Клик по карточке
   const handleClick = (card: Card) => {
     if (disabled || card.isFlipped || card.isMatched) return
 
     const wasSeenBefore = seenCards.includes(card.id)
 
-    // фиксируем первое открытие
+    // Фиксируем первое открытие
     if (!wasSeenBefore) {
       setSeenCards(prev => [...prev, card.id])
     }
@@ -209,6 +184,7 @@ export default function Memory() {
   // Проверка победы
   const isWin = cards.length > 0 && cards.every(c => c.isMatched)
 
+  const navigate = useNavigate()
   return (
     <div
       style={{
@@ -239,7 +215,7 @@ export default function Memory() {
         >
           <h3 style={{ margin: 0 }}>Очки: {score}</h3>
 
-          {/* Popup с изменением счета*/}
+          {/* Popup с изменением счета */}
           {scorePopup && (
             <span
               style={{
@@ -312,8 +288,8 @@ export default function Memory() {
         </div>
       </div>
 
-      {/*Кнопка "Начать заново" */}
-      <div style={{ marginTop: 15 }}>
+      {/*Кнопки "Начать заново" и "Вернуться на главную страницу" */}
+      <div style={{ marginTop: 15, display: 'flex', gap: 10 }}>
         <button
           onClick={() => {
             const size = SIZE_MAP[difficulty]
@@ -326,7 +302,15 @@ export default function Memory() {
             setDisabled(false)
           }}
         >
-          Начать заново 🔄
+          🔄 Начать заново
+        </button>
+
+        <button
+          onClick={() => {
+            navigate('/cognitive_games/')
+          }}
+        >
+          🏠 Вернуться на главную
         </button>
       </div>
 
