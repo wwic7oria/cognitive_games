@@ -31,6 +31,18 @@ body {
 }
 
 /* =========================
+   СТАТИСТИКА
+========================= */
+.stats-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.stats {
+  text-align: left;
+}
+
+/* =========================
    НАЗВАНИЯ И ПОДЗАГОЛОВКИ
 ========================= */
 
@@ -83,7 +95,7 @@ button.selected {
 }
 
 /* =========================
-   
+   КНОПКИ ВЫБОРА СЛОЖНОСТИ
 ========================= */
 
 .difficulty {
@@ -96,7 +108,7 @@ button.selected {
   color: rgb(0, 0, 0);
 }
 /* =========================
-   СЧЕТ
+   СЧЕТ В ИГРЕ
 ========================= */
 
 .score-wrapper {
@@ -132,25 +144,8 @@ button.selected {
   color: #ff4d4d;
 }
 
-@keyframes popupFade {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  20% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-}
-
 /* =========================
-   ИГРОВОЕ ПОЛЕ + ПОЛЕ ДЛЯ ЭМОДЗИ
+   ИГРОВОЕ ПОЛЕ С КАРТОЧКАМИ + ПОЛЕ ДЛЯ ЭМОДЗИ
 ========================= */
 
 .game-grid {
@@ -336,5 +331,22 @@ button.selected {
     font-size: 14px;
     padding: 8px 12px;
     margin: 10px;
+  }
+}
+
+@keyframes popupFade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
   }
 }

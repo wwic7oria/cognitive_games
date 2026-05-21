@@ -20,39 +20,41 @@ export default function Stats() {
     arr.length ? Math.round(getTotalScore(arr) / arr.length) : 0
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>📊 Статистика</h2>
+    <div className="stats-wrapper">
+      <div className="stats">
+        <h2>📊 Статистика</h2>
 
-      {/* MEMORY */}
-      <div style={{ marginTop: 40 }}>
-        <h3>🧠 Поиск карт</h3>
-        <p>Игр сыграно: {memoryScores.length}</p>
-        <p>Сумма очков: {getTotalScore(memoryScores)}</p>
-        <p>Лучший результат: {getBestScore(memoryScores)}</p>
-        <p>Средний результат: {getAvgScore(memoryScores)}</p>
-      </div>
+        {/* MEMORY */}
+        <div style={{ marginTop: 40 }}>
+          <h3>🧠 Поиск карт</h3>
+          <p>Игр сыграно: {memoryScores.length}</p>
+          <p>Сумма очков: {getTotalScore(memoryScores)}</p>
+          <p>Лучший результат: {getBestScore(memoryScores)}</p>
+          <p>Средний результат: {getAvgScore(memoryScores)}</p>
+        </div>
 
-      {/* SEQUENCE */}
-      <div style={{ marginTop: 40 }}>
-        <h3>🔢 Повтори последовательность</h3>
-        <p>Игр сыграно: {sequenceScores.length}</p>
-        <p>Сумма очков: {getTotalScore(sequenceScores)}</p>
-        <p>Лучший результат: {getBestScore(sequenceScores)}</p>
-        <p>Средний результат: {getAvgScore(sequenceScores)}</p>
-      </div>
+        {/* SEQUENCE */}
+        <div style={{ marginTop: 40 }}>
+          <h3>🔢 Повтори последовательность</h3>
+          <p>Игр сыграно: {sequenceScores.length}</p>
+          <p>Сумма очков: {getTotalScore(sequenceScores)}</p>
+          <p>Лучший результат: {getBestScore(sequenceScores)}</p>
+          <p>Средний результат: {getAvgScore(sequenceScores)}</p>
+        </div>
 
-      {/* ATTENTION */}
-      <div style={{ marginTop: 40 }}>
-        <h3>🎯 Вспомни элементы</h3>
-        <p>Игр сыграно: {attentionScores.length}</p>
-        <p>Сумма очков: {getTotalScore(attentionScores)}</p>
-        <p>Лучший результат: {getBestScore(attentionScores)}</p>
-        <p>Средний результат: {getAvgScore(attentionScores)}</p>
-      </div>
+        {/* ATTENTION */}
+        <div style={{ marginTop: 40 }}>
+          <h3>🎯 Вспомни элементы</h3>
+          <p>Игр сыграно: {attentionScores.length}</p>
+          <p>Сумма очков: {getTotalScore(attentionScores)}</p>
+          <p>Лучший результат: {getBestScore(attentionScores)}</p>
+          <p>Средний результат: {getAvgScore(attentionScores)}</p>
+        </div>
 
-      {/* Назад */}
-      <div style={{ marginTop: 40 }}>
-        <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
+        {/* Назад */}
+        <div style={{ marginTop: 40 }}>
+          <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
+        </div>
       </div>
     </div>
   )
