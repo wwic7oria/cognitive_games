@@ -5,6 +5,8 @@ import { SHAPE_EMOJI, COLOR_EMOJI, SIZE_MAP } from './attention/constants'
 import { rulesByDifficulty } from './attention/rules'
 import { progressStore } from './stats/progressStore'
 import { ScoreBlock } from './ScoreBlock'
+import type { Difficulty } from './attention/constants'
+import { DifficultySelector } from './DifficultySelector'
 
 export default function Attention() {
   const navigate = useNavigate()
@@ -50,35 +52,15 @@ export default function Attention() {
       />
 
       {/* СЛОЖНОСТЬ */}
-      <div className="section">
-        <h3>Сложность</h3>
-        <div className="buttons-row">
-          <button
-            className={difficulty === 'easy' ? 'selected' : ''}
-            onClick={() => {
-              setDifficulty('easy')
-            }}
-          >
-            Легкий (6 элементов)
-          </button>
-          <button
-            className={difficulty === 'medium' ? 'selected' : ''}
-            onClick={() => {
-              setDifficulty('medium')
-            }}
-          >
-            Средний (8 элементов)
-          </button>
-          <button
-            className={difficulty === 'hard' ? 'selected' : ''}
-            onClick={() => {
-              setDifficulty('hard')
-            }}
-          >
-            Сложный (8 элементов)
-          </button>
-        </div>
-      </div>
+      <DifficultySelector
+        current={difficulty}
+        onChange={value => setDifficulty(value as Difficulty)}
+        options={[
+          { value: 'easy', label: 'Легкий (6 элементов)' },
+          { value: 'medium', label: 'Средний (8 элементов)' },
+          { value: 'hard', label: 'Сложный (8 элементов)' },
+        ]}
+      />
 
       {/* КНОПКА НАЧАЛА РАУНДА */}
       {phase === 'show' && items.length === 0 && (

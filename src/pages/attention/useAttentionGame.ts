@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import type { Difficulty } from './constants'
 import {
   SIZE_MAP,
@@ -24,7 +24,13 @@ export function useAttentionGame() {
   const [score, setScore] = useState(0)
   const [popup, setPopup] = useState<string | null>(null)
 
+  const timeoutRef = useRef<number | null>(null)
+
   const reset = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
     setItems([])
     setQuestion(null)
     setOptions([])
@@ -92,7 +98,7 @@ export function useAttentionGame() {
     setItems(newItems)
     setPhase('show')
 
-    setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       buildQuestion(newItems, currentDifficulty)
       setPhase('question')
     }, SHOW_TIME[currentDifficulty])
@@ -114,7 +120,7 @@ export function useAttentionGame() {
 
     setPhase('result')
 
-    setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       setItems([])
       setQuestion(null)
       setOptions([])

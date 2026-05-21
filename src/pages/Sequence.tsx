@@ -5,6 +5,8 @@ import { progressStore } from './stats/progressStore'
 import { useSequenceGame } from './sequence/useSequenceGame'
 import { rulesByDifficulty } from './sequence/rules'
 import { ScoreBlock } from './ScoreBlock'
+import type { Difficulty } from './attention/constants'
+import { DifficultySelector } from './DifficultySelector'
 
 export default function Sequence() {
   const {
@@ -61,27 +63,15 @@ export default function Sequence() {
         popup={scorePopup}
       />
 
-      {/* СЛОЖНОСТЬ */}
-      <div className="buttons-row">
-        <button
-          className={difficulty === 'easy' ? 'selected' : ''}
-          onClick={() => setDifficulty('easy')}
-        >
-          Лёгкий (2x2)
-        </button>
-        <button
-          className={difficulty === 'medium' ? 'selected' : ''}
-          onClick={() => setDifficulty('medium')}
-        >
-          Средний (3x3)
-        </button>
-        <button
-          className={difficulty === 'hard' ? 'selected' : ''}
-          onClick={() => setDifficulty('hard')}
-        >
-          Сложный (4x4)
-        </button>
-      </div>
+      <DifficultySelector
+        current={difficulty}
+        onChange={value => setDifficulty(value as Difficulty)}
+        options={[
+          { value: 'easy', label: 'Лёгкий (2x2)' },
+          { value: 'medium', label: 'Средний (3x3)' },
+          { value: 'hard', label: 'Сложный (4x4)' },
+        ]}
+      />
 
       {/* ИНФОРМАЦИЯ О ДЛИНЕ ПОСЛЕДОВАТЕЛЬНОСТИ */}
       <div

@@ -7,7 +7,7 @@ export function ScoreBlock({ score, popup }: ScoreBlockProps) {
   return (
     <div className="score-wrapper">
       <div className="score-container">
-        <h3 className="score-title">Очки: {score}</h3>
+        <h3 className="score-title">Счёт: {score}</h3>
 
         {popup && (
           <span

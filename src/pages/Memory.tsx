@@ -2,9 +2,10 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 
 import { rulesByDifficulty } from './memory/rules'
-import { useMemoryGame } from './memory/useMemoryGame'
+import { useMemoryGame, type Difficulty } from './memory/useMemoryGame'
 import { progressStore } from './stats/progressStore'
 import { ScoreBlock } from './ScoreBlock'
+import { DifficultySelector } from './DifficultySelector'
 
 export default function Memory() {
   const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =
@@ -49,20 +50,14 @@ export default function Memory() {
       />
 
       {/* СЛОЖНОСТЬ */}
-      <div className="buttons-row">
-        <button
-          className={difficulty === 'easy' ? 'selected' : ''}
-          onClick={() => initGame('easy')}
-        >
-          Лёгкий (4x4)
-        </button>
-        <button
-          className={difficulty === 'medium' ? 'selected' : ''}
-          onClick={() => initGame('medium')}
-        >
-          Средний (6x6)
-        </button>
-      </div>
+      <DifficultySelector
+        current={difficulty}
+        onChange={value => initGame(value as Difficulty)}
+        options={[
+          { value: 'easy', label: 'Лёгкий (4x4)' },
+          { value: 'medium', label: 'Средний (6x6)' },
+        ]}
+      />
 
       {/* ПОЛЕ */}
       <div
