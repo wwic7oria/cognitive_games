@@ -2,11 +2,11 @@ import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { progressStore } from './stats/progressStore'
-import { useSequenceGame } from './sequence/useSequenceGame'
-import { rulesByDifficulty } from './sequence/rules'
-import { ScoreBlock } from './ScoreBlock'
-import type { Difficulty } from './attention/constants'
-import { DifficultySelector } from './DifficultySelector'
+import { useSequenceGame } from './games/sequence/useSequenceGame'
+import { rulesByDifficulty } from './games/sequence/rules'
+import { ScoreBlock } from './components/ScoreBlock'
+import type { Difficulty } from './games/attention/constants'
+import { DifficultySelector } from './components/DifficultySelector'
 
 export default function Sequence() {
   const {

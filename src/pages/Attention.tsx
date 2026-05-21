@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAttentionGame } from './attention/useAttentionGame'
-import { SHAPE_EMOJI, COLOR_EMOJI, SIZE_MAP } from './attention/constants'
-import { rulesByDifficulty } from './attention/rules'
+import { useAttentionGame } from './games/attention/useAttentionGame'
+import { SHAPE_EMOJI, COLOR_EMOJI, SIZE_MAP } from './games/attention/constants'
+import { rulesByDifficulty } from './games/attention/rules'
 import { progressStore } from './stats/progressStore'
-import { ScoreBlock } from './ScoreBlock'
-import type { Difficulty } from './attention/constants'
-import { DifficultySelector } from './DifficultySelector'
+import { ScoreBlock } from './components/ScoreBlock'
+import type { Difficulty } from './games/attention/constants'
+import { DifficultySelector } from './components/DifficultySelector'
 
 export default function Attention() {
   const navigate = useNavigate()
