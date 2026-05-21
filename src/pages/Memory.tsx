@@ -77,7 +77,7 @@ export default function Memory() {
           <div
             key={card.id}
             onClick={() => handleClick(card)}
-            className={`memory-card ${
+            className={`card ${
               card.isFlipped || card.isMatched ? 'flipped' : ''
             } ${card.isMatched ? 'matched' : ''}`}
           >
@@ -92,8 +92,6 @@ export default function Memory() {
       {/* ДЕЙСТВИЯ */}
       <div className="buttons-row section">
         <button onClick={() => initGame(difficulty)}>🔄 Начать заново</button>
-
-        <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
       </div>
 
       {/* ПРАВИЛА */}
@@ -105,6 +103,9 @@ export default function Memory() {
             <b className={rule.color}>{rule.value}</b> {rule.text}
           </p>
         ))}
+      </div>
+      <div className="buttons-row section">
+        <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
       </div>
     </div>
   )

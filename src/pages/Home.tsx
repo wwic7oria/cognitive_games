@@ -4,14 +4,14 @@ export default function Home() {
   const navigate = useNavigate()
 
   return (
-    <div>
-      <h1>Когнитивные тренажёры</h1>
+    <div className="page">
+      <h1 className="page-title">Когнитивные тренажёры</h1>
+      <br />
 
       <button onClick={() => navigate('/memory')}>
         Поиск дубликатов карточек
       </button>
 
-      <br />
       <br />
 
       <button onClick={() => navigate('/sequence')}>
@@ -19,13 +19,9 @@ export default function Home() {
       </button>
 
       <br />
-      <br />
 
-      <button onClick={() => navigate('/attention')}>
-        Вспомни элементы
-      </button>
+      <button onClick={() => navigate('/attention')}>Запомни элементы</button>
 
-      <br />
       <br />
 
       <button onClick={() => navigate('/stats')}>Статистика</button>
