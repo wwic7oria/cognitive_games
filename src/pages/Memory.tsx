@@ -1,11 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
-
-import { rulesByDifficulty } from './games/memory/rules'
-import { useMemoryGame, type Difficulty } from './games/memory/useMemoryGame'
-import { progressStore } from './stats/progressStore'
-import { ScoreBlock } from './components/ScoreBlock'
-import { DifficultySelector } from './components/DifficultySelector'
+import {
+  useMemoryGame,
+  rulesByDifficulty,
+  type Difficulty,
+} from '../games/memory'
+import {
+  ScoreBlock,
+  DifficultySelector,
+  RulesBlock,
+  GameLayout,
+} from '../components'
+import { MemoryGrid } from '../components/grids'
+import { useGameResult } from '../hooks/useGameResult'
 
 export default function Memory() {
   const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =
@@ -30,19 +37,15 @@ export default function Memory() {
   const isWin = cards.length > 0 && cards.every(c => c.isMatched)
 
   // СОХРАНЕНИЕ РЕЗУЛЬТАТА
-  useEffect(() => {
-    if (!isWin) return
-    if (savedRef.current) return
-
-    savedRef.current = true
-
-    progressStore.addScore('memory', score, difficulty)
-  }, [isWin, score, difficulty])
+  useGameResult({
+    game: 'memory',
+    score,
+    difficulty,
+    shouldSave: isWin,
+  })
 
   return (
-    <div className="page">
-      <h2 className="page-title">Поиск карточек</h2>
-
+    <GameLayout title="Поиск карточек">
       {/* ОЧКИ */}
       <ScoreBlock
         score={score}
@@ -60,24 +63,12 @@ export default function Memory() {
       />
 
       {/* ПОЛЕ */}
-      <div
-        className="game-grid"
-        style={{
-          gridTemplateColumns: `repeat(${size}, 80px)`,
-        }}
-      >
-        {cards.map(card => (
-          <div
-            key={card.id}
-            onClick={() => handleClick(card)}
-            className={`card ${
-              card.isFlipped || card.isMatched ? 'flipped' : ''
-            } ${card.isMatched ? 'matched' : ''}`}
-          >
-            {card.isFlipped || card.isMatched ? card.value : '?'}
-          </div>
-        ))}
-      </div>
+      <MemoryGrid
+        cards={cards}
+        onCardClick={handleClick}
+        size={size}
+        isWin={cards.length > 0 && cards.every(c => c.isMatched)}
+      />
 
       {/* ПРОВЕРКА НА ПОБЕДУ */}
       {isWin && <h3 className="win-text">Победа 🏆</h3>}
@@ -88,18 +79,11 @@ export default function Memory() {
       </div>
 
       {/* ПРАВИЛА */}
-      <div className="rules">
-        <h3>Правила</h3>
+      <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
-        {rulesByDifficulty[difficulty].map((rule, i) => (
-          <p key={i}>
-            <b className={rule.color}>{rule.value}</b> {rule.text}
-          </p>
-        ))}
-      </div>
       <div className="buttons-row section">
         <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
       </div>
-    </div>
+    </GameLayout>
   )
 }

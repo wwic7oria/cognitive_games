@@ -1,12 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-import { progressStore } from './stats/progressStore'
-import { useSequenceGame } from './games/sequence/useSequenceGame'
-import { rulesByDifficulty } from './games/sequence/rules'
-import { ScoreBlock } from './components/ScoreBlock'
-import type { Difficulty } from './games/attention/constants'
-import { DifficultySelector } from './components/DifficultySelector'
+import {
+  useSequenceGame,
+  rulesByDifficulty,
+  type Difficulty,
+} from '../games/sequence'
+import {
+  ScoreBlock,
+  DifficultySelector,
+  RulesBlock,
+  GameLayout,
+} from '../components'
+import { SequenceGrid } from '../components/grids'
+import { useGameResult } from '../hooks/useGameResult'
 
 export default function Sequence() {
   const {
@@ -44,19 +50,15 @@ export default function Sequence() {
   }, [difficulty])
 
   // СОХРАНЕНИЕ РЕЗУЛЬТАТА
-  useEffect(() => {
-    if (result !== 'win') return
-    if (savedRef.current) return
-
-    savedRef.current = true
-
-    progressStore.addScore('sequence', score, difficulty)
-  }, [result, score, difficulty])
+  useGameResult({
+    game: 'sequence',
+    score,
+    difficulty,
+    shouldSave: result === 'win',
+  })
 
   return (
-    <div className="page">
-      <h2 className="page-title">Повтор последовательности</h2>
-
+    <GameLayout title="Повтор последовательности">
       {/* ОЧКИ */}
       <ScoreBlock
         score={score}
@@ -82,36 +84,15 @@ export default function Sequence() {
       </div>
 
       {/* ПОЛЕ */}
-      <div
-        className="game-grid"
-        style={{
-          gridTemplateColumns: `repeat(${size}, 80px)`,
-        }}
-      >
-        {cells.map(id => {
-          const isActive = activeCell === id
-          const isWrong = wrongClick === id
-          const isRight = lastClicked === id
-
-          return (
-            <div
-              key={id}
-              onClick={() => handleClick(id)}
-              className={`
-          card
-          ${isActive ? 'activeCell' : ''}
-          ${isWrong ? 'wrongClick' : ''}
-          ${isRight ? 'rightClick' : ''}
-        `}
-              style={{
-                cursor: gameState === 'input' ? 'pointer' : 'not-allowed',
-              }}
-            >
-              {id}
-            </div>
-          )
-        })}
-      </div>
+      <SequenceGrid
+        cells={cells}
+        size={size}
+        activeCell={activeCell}
+        wrongClick={wrongClick}
+        lastClicked={lastClicked}
+        gameState={gameState}
+        onClick={handleClick}
+      />
 
       {/* СТАТУС */}
       <div className="section">
@@ -127,17 +108,9 @@ export default function Sequence() {
       {gameState === 'idle' && <button onClick={startGame}>Начать ▶</button>}
 
       {/* ПРАВИЛА */}
-      <div className="rules">
-        <h3>Правила</h3>
-
-        {rulesByDifficulty[difficulty].map((rule, i) => (
-          <p key={i}>
-            <b className={rule.color}>{rule.value}</b> {rule.text}
-          </p>
-        ))}
-      </div>
+      <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
       <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
-    </div>
+    </GameLayout>
   )
 }

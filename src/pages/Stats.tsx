@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { progressStore } from './stats/progressStore'
+import { progressStore } from '../stats/progressStore'
 
 export default function Stats() {
   const navigate = useNavigate()

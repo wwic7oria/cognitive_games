@@ -1,18 +1,28 @@
-import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAttentionGame } from './games/attention/useAttentionGame'
-import { SHAPE_EMOJI, COLOR_EMOJI, SIZE_MAP } from './games/attention/constants'
-import { rulesByDifficulty } from './games/attention/rules'
-import { progressStore } from './stats/progressStore'
-import { ScoreBlock } from './components/ScoreBlock'
-import type { Difficulty } from './games/attention/constants'
-import { DifficultySelector } from './components/DifficultySelector'
+import { useEffect, useRef } from 'react'
+import {
+  useAttentionGame,
+  SIZE_MAP,
+  rulesByDifficulty,
+  SHAPE_EMOJI,
+  COLOR_EMOJI,
+  type Difficulty,
+} from '../games/attention'
+import {
+  ScoreBlock,
+  DifficultySelector,
+  RulesBlock,
+  GameLayout,
+  QuestionBlock,
+} from '../components'
+import { AttentionGrid } from '../components/grids'
+import { useGameResult } from '../hooks/useGameResult'
 
 export default function Attention() {
   const navigate = useNavigate()
   const {
     difficulty,
-    setDifficulty,
+    changeDifficulty,
     items,
     phase,
     question,
@@ -28,23 +38,21 @@ export default function Attention() {
 
   const savedRef = useRef(false)
 
-  useEffect(() => {
-    if (phase !== 'result') return
-    if (savedRef.current) return
-
-    savedRef.current = true
-
-    progressStore.addScore('attention', score, difficulty)
-  }, [phase, score, difficulty])
+  useGameResult({
+    game: 'attention',
+    score,
+    difficulty,
+    shouldSave: phase === 'result',
+  })
 
   useEffect(() => {
     savedRef.current = false
   }, [difficulty])
 
-  return (
-    <div className="page">
-      <h1 className="page-title">Визуальное внимание</h1>
+  const isIdle = items.length === 0 && !question
 
+  return (
+    <GameLayout title="Визуальное внимание">
       {/* ОЧКИ */}
       <ScoreBlock
         score={score}
@@ -54,7 +62,7 @@ export default function Attention() {
       {/* СЛОЖНОСТЬ */}
       <DifficultySelector
         current={difficulty}
-        onChange={value => setDifficulty(value as Difficulty)}
+        onChange={value => changeDifficulty(value as Difficulty)}
         options={[
           { value: 'easy', label: 'Легкий (6 элементов)' },
           { value: 'medium', label: 'Средний (8 элементов)' },
@@ -63,7 +71,7 @@ export default function Attention() {
       />
 
       {/* КНОПКА НАЧАЛА РАУНДА */}
-      {phase === 'show' && items.length === 0 && (
+      {isIdle && (
         <button
           onClick={startRound}
           style={{ marginTop: '20px', fontSize: '20px' }}
@@ -74,74 +82,33 @@ export default function Attention() {
 
       {/* ПОЛЕ */}
       {phase === 'show' && items.length > 0 && (
-        <div className="section">
-          <div
-            className="emoji-grid"
-            style={{
-              gridTemplateColumns: `repeat(${gridCols}, 80px)`,
-            }}
-          >
-            {items.map((item, index) => (
-              <div
-                key={index}
-                className="attention-card"
-              >
-                <div className="emoji-row">
-                  {difficulty === 'easy' ? (
-                    <span>{COLOR_EMOJI[item.color]}</span>
-                  ) : (
-                    <span>{SHAPE_EMOJI[item.shape]}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <AttentionGrid
+          items={items}
+          gridCols={gridCols}
+          difficulty={difficulty}
+          SHAPE_EMOJI={SHAPE_EMOJI}
+          COLOR_EMOJI={COLOR_EMOJI}
+        />
       )}
 
+      {/* ВОПРОСЫ */}
       {phase === 'question' && (
-        <div className="section">
-          <h2
-            style={{
-              marginTop: '30px',
-              marginBottom: '30px',
-              textAlign: 'center',
-            }}
-          >
-            {question}
-          </h2>
-          <div className="buttons-row">
-            {options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => submitAnswer(option.value)}
-                style={{ minWidth: '80px' }}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <QuestionBlock
+          question={question}
+          options={options}
+          onAnswer={submitAnswer}
+        />
       )}
 
       {/* ПРАВИЛА */}
-      <div className="rules">
-        <h3>Правила</h3>
-        <p style={{ fontSize: '18px' }}>
-          На экране показываются элементы. Запомните их и ответьте на вопрос
-          выше.
-        </p>
-
-        {rulesByDifficulty[difficulty].map((rule, i) => (
-          <p key={i}>
-            <b className={rule.color}>{rule.value}</b> {rule.text}
-          </p>
-        ))}
-      </div>
+      <RulesBlock
+        intro="На экране показываются элементы. Запомните их и ответьте на вопрос выше."
+        rules={rulesByDifficulty[difficulty]}
+      />
 
       <div className="buttons-row">
         <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
       </div>
-    </div>
+    </GameLayout>
   )
 }
