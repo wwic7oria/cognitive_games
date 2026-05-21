@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { progressStore } from './stats/progressStore'
 import { useSequenceGame } from './sequence/useSequenceGame'
 import { rulesByDifficulty } from './sequence/rules'
+import { ScoreBlock } from './ScoreBlock'
 
 export default function Sequence() {
   const {
@@ -55,21 +56,10 @@ export default function Sequence() {
       <h2 className="page-title">Повтор последовательности</h2>
 
       {/* ОЧКИ */}
-      <div className="score-wrapper">
-        <div className="score-container">
-          <h3 className="score-title">Очки: {score}</h3>
-
-          {scorePopup && (
-            <span
-              className={`score-popup ${
-                scorePopup.startsWith('+') ? 'positive' : 'negative'
-              }`}
-            >
-              {scorePopup}
-            </span>
-          )}
-        </div>
-      </div>
+      <ScoreBlock
+        score={score}
+        popup={scorePopup}
+      />
 
       {/* СЛОЖНОСТЬ */}
       <div className="buttons-row">

@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { rulesByDifficulty } from './memory/rules'
 import { useMemoryGame } from './memory/useMemoryGame'
 import { progressStore } from './stats/progressStore'
+import { ScoreBlock } from './ScoreBlock'
 
 export default function Memory() {
   const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =
@@ -42,23 +43,10 @@ export default function Memory() {
       <h2 className="page-title">Поиск карточек</h2>
 
       {/* ОЧКИ */}
-      <div className="score-wrapper">
-        <div className="score-container">
-          <h3 className="score-title">Очки: {score}</h3>
-
-          {scorePopup && (
-            <span
-              className={
-                scorePopup.startsWith('+')
-                  ? 'score-popup positive'
-                  : 'score-popup negative'
-              }
-            >
-              {scorePopup}
-            </span>
-          )}
-        </div>
-      </div>
+      <ScoreBlock
+        score={score}
+        popup={scorePopup}
+      />
 
       {/* СЛОЖНОСТЬ */}
       <div className="buttons-row">

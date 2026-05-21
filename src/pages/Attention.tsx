@@ -4,6 +4,7 @@ import { useAttentionGame } from './attention/useAttentionGame'
 import { SHAPE_EMOJI, COLOR_EMOJI, SIZE_MAP } from './attention/constants'
 import { rulesByDifficulty } from './attention/rules'
 import { progressStore } from './stats/progressStore'
+import { ScoreBlock } from './ScoreBlock'
 
 export default function Attention() {
   const navigate = useNavigate()
@@ -43,18 +44,10 @@ export default function Attention() {
       <h1 className="page-title">Визуальное внимание</h1>
 
       {/* ОЧКИ */}
-      <div className="score-wrapper">
-        <div className="score-container">
-          <h2 className="score-title">Счет: {score}</h2>
-          {popup && (
-            <div
-              className={`score-popup ${popup.startsWith('+') ? 'positive' : 'negative'}`}
-            >
-              {popup}
-            </div>
-          )}
-        </div>
-      </div>
+      <ScoreBlock
+        score={score}
+        popup={popup}
+      />
 
       {/* СЛОЖНОСТЬ */}
       <div className="section">
