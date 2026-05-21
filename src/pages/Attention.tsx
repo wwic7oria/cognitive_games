@@ -5,7 +5,14 @@
 Средний - 6 элементов, 2 секунды. Вопросы посложнее - сколько кругов, сколько звезд?
 Сложный - 8 элементов, 2 секунды (1?). Вопросы аналогичны предыдущему пункту, возмонжы также "был ли красный круг?"
 */
+import { useNavigate } from 'react-router-dom'
 
 export default function Attention() {
-  return <h2>Игра на визуальное внимание</h2>
+  const navigate = useNavigate()
+  return (
+    <div>
+      <h2>Игра на визуальное внимание</h2>
+      <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
+    </div>
+  )
 }

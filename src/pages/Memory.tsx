@@ -247,9 +247,6 @@ export default function Memory() {
         <button onClick={() => setDifficulty('medium')}>Средний (6x6)</button>
       </div>
 
-      {/* Победа */}
-      {isWin && <h3>Победа 🏆</h3>}
-
       {/* Поле */}
       <div
         style={{
@@ -288,6 +285,9 @@ export default function Memory() {
         </div>
       </div>
 
+      {/* Победа */}
+      {isWin && <h3>Победа 🏆</h3>}
+
       {/*Кнопки "Начать заново" и "Вернуться на главную страницу" */}
       <div style={{ marginTop: 15, display: 'flex', gap: 10 }}>
         <button
@@ -307,7 +307,7 @@ export default function Memory() {
 
         <button
           onClick={() => {
-            navigate('/cognitive_games/')
+            navigate('/')
           }}
         >
           🏠 Вернуться на главную
