@@ -294,6 +294,43 @@ export default function Sequence() {
 
         <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
       </div>
+
+      {/* Правила */}
+      <div style={{ marginTop: 20, textAlign: 'center' }}>
+        <h3>Правила</h3>
+
+        {difficulty === 'easy' ? (
+          <div>
+            <p>
+              <b style={{ color: 'green' }}>+10</b> очков за правильное
+              повторение
+            </p>
+            <p>
+              <b style={{ color: 'red' }}>-5</b> очков за ошибку
+            </p>
+          </div>
+        ) : difficulty === 'medium' ? (
+          <div>
+            <p>
+              <b style={{ color: 'green' }}>+15</b> очков за правильное
+              повторение
+            </p>
+            <p>
+              <b style={{ color: 'red' }}>-8</b> очков за ошибку
+            </p>
+          </div>
+        ) : (
+          <div>
+            <p>
+              <b style={{ color: 'green' }}>+20</b> очков за правильное
+              повторение
+            </p>
+            <p>
+              <b style={{ color: 'red' }}>-10</b> очков за ошибку
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
