@@ -73,9 +73,24 @@ export default function Sequence() {
 
       {/* СЛОЖНОСТЬ */}
       <div className="buttons-row">
-        <button onClick={() => setDifficulty('easy')}>Лёгкий (2x2)</button>
-        <button onClick={() => setDifficulty('medium')}>Средний (3x3)</button>
-        <button onClick={() => setDifficulty('hard')}>Сложный (4x4)</button>
+        <button
+          className={difficulty === 'easy' ? 'selected' : ''}
+          onClick={() => setDifficulty('easy')}
+        >
+          Лёгкий (2x2)
+        </button>
+        <button
+          className={difficulty === 'medium' ? 'selected' : ''}
+          onClick={() => setDifficulty('medium')}
+        >
+          Средний (3x3)
+        </button>
+        <button
+          className={difficulty === 'hard' ? 'selected' : ''}
+          onClick={() => setDifficulty('hard')}
+        >
+          Сложный (4x4)
+        </button>
       </div>
 
       {/* ИНФОРМАЦИЯ О ДЛИНЕ ПОСЛЕДОВАТЕЛЬНОСТИ */}

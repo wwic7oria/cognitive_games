@@ -1,15 +1,9 @@
-/* 
-На экране показывается набор элементов на несколько секунд. Далее вопрос - был ли элемент в этом наборе? 
-Сложность зависит от скорости показа набора элементов и количества элементов. Уровни сложности:
-Легкий - 5 элементов, 2 секунды. Вопросы простые - сколько было синих кругов?
-Средний - 8 элементов, 2 секунды. Вопросы посложнее - была ли звездочка?
-Сложный - 8 элементов, 3 секунды. Вопросы сложные - сколько звездочек?
-*/
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAttentionGame } from './attention/useAttentionGame'
 import { SHAPE_EMOJI, COLOR_EMOJI, SIZE_MAP } from './attention/constants'
-
 import { rulesByDifficulty } from './attention/rules'
+import { progressStore } from './stats/progressStore'
 
 export default function Attention() {
   const navigate = useNavigate()
@@ -28,6 +22,21 @@ export default function Attention() {
 
   const size = SIZE_MAP[difficulty]
   const gridCols = Math.ceil(Math.sqrt(size))
+
+  const savedRef = useRef(false)
+
+  useEffect(() => {
+    if (phase !== 'result') return
+    if (savedRef.current) return
+
+    savedRef.current = true
+
+    progressStore.addScore('attention', score, difficulty)
+  }, [phase, score, difficulty])
+
+  useEffect(() => {
+    savedRef.current = false
+  }, [difficulty])
 
   return (
     <div className="page">
@@ -51,14 +60,29 @@ export default function Attention() {
       <div className="section">
         <h3>Сложность</h3>
         <div className="buttons-row">
-          <button onClick={() => setDifficulty('easy')}>
-            Легкий (5 элементов)
+          <button
+            className={difficulty === 'easy' ? 'selected' : ''}
+            onClick={() => {
+              setDifficulty('easy')
+            }}
+          >
+            Легкий (6 элементов)
           </button>
-          <button onClick={() => setDifficulty('medium')}>
-            Средний (7 элементов)
+          <button
+            className={difficulty === 'medium' ? 'selected' : ''}
+            onClick={() => {
+              setDifficulty('medium')
+            }}
+          >
+            Средний (8 элементов)
           </button>
-          <button onClick={() => setDifficulty('hard')}>
-            Сложный (9 элементов)
+          <button
+            className={difficulty === 'hard' ? 'selected' : ''}
+            onClick={() => {
+              setDifficulty('hard')
+            }}
+          >
+            Сложный (8 элементов)
           </button>
         </div>
       </div>
@@ -69,7 +93,7 @@ export default function Attention() {
           onClick={startRound}
           style={{ marginTop: '20px', fontSize: '20px' }}
         >
-          Начать раунд
+          Начать раунд ▶
         </button>
       )}
 
@@ -77,7 +101,7 @@ export default function Attention() {
       {phase === 'show' && items.length > 0 && (
         <div className="section">
           <div
-            className="game-grid"
+            className="emoji-grid"
             style={{
               gridTemplateColumns: `repeat(${gridCols}, 80px)`,
             }}
@@ -123,15 +147,6 @@ export default function Attention() {
             ))}
           </div>
         </div>
-      )}
-
-      {phase === 'result' && (
-        <button
-          onClick={startRound}
-          style={{ marginTop: '20px', fontSize: '20px' }}
-        >
-          Следующий раунд
-        </button>
       )}
 
       {/* ПРАВИЛА */}

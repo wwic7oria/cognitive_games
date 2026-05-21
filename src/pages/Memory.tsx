@@ -62,8 +62,18 @@ export default function Memory() {
 
       {/* СЛОЖНОСТЬ */}
       <div className="buttons-row">
-        <button onClick={() => initGame('easy')}>Лёгкий (4x4)</button>
-        <button onClick={() => initGame('medium')}>Средний (6x6)</button>
+        <button
+          className={difficulty === 'easy' ? 'selected' : ''}
+          onClick={() => initGame('easy')}
+        >
+          Лёгкий (4x4)
+        </button>
+        <button
+          className={difficulty === 'medium' ? 'selected' : ''}
+          onClick={() => initGame('medium')}
+        >
+          Средний (6x6)
+        </button>
       </div>
 
       {/* ПОЛЕ */}

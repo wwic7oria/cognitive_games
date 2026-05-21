@@ -77,6 +77,11 @@ button:active {
   transform: scale(0.97);
 }
 
+button.selected {
+  background: #a0c8e9;
+  color: rgb(0, 0, 0);
+}
+
 /* =========================
    
 ========================= */
@@ -145,11 +150,21 @@ button:active {
 }
 
 /* =========================
-   ИГРОВОЕ ПОЛЕ
+   ИГРОВОЕ ПОЛЕ + ПОЛЕ ДЛЯ ЭМОДЗИ
 ========================= */
 
 .game-grid {
   display: grid;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 80px);
+
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
@@ -202,12 +217,6 @@ button:active {
   background: #7dff9b;
   color: black;
   border-color: #3fcf68;
-}
-
-.card.wrong {
-  background: #ff5f5f;
-  color: black;
-  border-color: #ff1f1f;
 }
 
 /* =========================

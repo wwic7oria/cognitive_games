@@ -17,10 +17,8 @@ const initialState: ProgressState = {
   attention: [],
 }
 
-// Загрузка из localStorage
-function load(): ProgressState {
+function getState(): ProgressState {
   const raw = localStorage.getItem(STORAGE_KEY)
-
   if (!raw) return initialState
 
   try {
@@ -30,43 +28,35 @@ function load(): ProgressState {
   }
 }
 
-// Сохранение
-function save(state: ProgressState) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
-
-// Текущее состояние (в памяти)
-let state: ProgressState = load()
-
 export const progressStore = {
-  // Получить все и по игре
   getAll() {
-    return state
+    return getState()
   },
 
   get(game: GameId) {
-    return state[game]
+    return getState()[game]
   },
 
-  // Добавить результат
   addResult(game: GameId, result: GameResult) {
+    const state = getState()
+
     state[game].push(result)
-    save(state)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   },
 
   addScore(game: GameId, score: number, difficulty: string) {
+    const state = getState()
+
     state[game].push({
       score,
       difficulty,
       playedAt: Date.now(),
     })
 
-    save(state)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   },
 
-  // Очистка всего
   reset() {
-    state = { ...initialState }
-    save(state)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(initialState))
   },
 }
