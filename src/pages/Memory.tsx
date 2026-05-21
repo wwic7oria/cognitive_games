@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { rulesByDifficulty } from './memory/rules'
 import { useMemoryGame } from './memory/useMemoryGame'
+import { progressStore } from './stats/progressStore'
 
 export default function Memory() {
   const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =
@@ -10,17 +11,37 @@ export default function Memory() {
 
   const navigate = useNavigate()
 
+  // Защита от повторного сохранения результата
+  const savedRef = useRef(false)
+
+  // Старт игры и сброс флага сохранения
   useEffect(() => {
     initGame('easy')
+    savedRef.current = false
   }, [])
 
+  // Если меняется сложность флаг тоже сбрасывается, чтобы можно было сохранять результат при смене сложности
+  useEffect(() => {
+    savedRef.current = false
+  }, [difficulty])
+
   const isWin = cards.length > 0 && cards.every(c => c.isMatched)
+
+  // СОХРАНЕНИЕ РЕЗУЛЬТАТА
+  useEffect(() => {
+    if (!isWin) return
+    if (savedRef.current) return
+
+    savedRef.current = true
+
+    progressStore.addScore('memory', score, difficulty)
+  }, [isWin, score, difficulty])
 
   return (
     <div className="page">
       <h2 className="page-title">Поиск карточек</h2>
 
-      {/* SCORE */}
+      {/* ОЧКИ */}
       <div className="score-wrapper">
         <div className="score-container">
           <h3 className="score-title">Очки: {score}</h3>
@@ -39,14 +60,13 @@ export default function Memory() {
         </div>
       </div>
 
-      {/* DIFFICULTY */}
+      {/* СЛОЖНОСТЬ */}
       <div className="buttons-row">
         <button onClick={() => initGame('easy')}>Лёгкий (4x4)</button>
-
         <button onClick={() => initGame('medium')}>Средний (6x6)</button>
       </div>
 
-      {/* GRID */}
+      {/* ПОЛЕ */}
       <div
         className="game-grid"
         style={{
@@ -66,7 +86,7 @@ export default function Memory() {
         ))}
       </div>
 
-      {/* ПРОВЕРКА ПОБЕДЫ */}
+      {/* ПРОВЕРКА НА ПОБЕДУ */}
       {isWin && <h3 className="win-text">Победа 🏆</h3>}
 
       {/* ДЕЙСТВИЯ */}
