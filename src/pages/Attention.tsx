@@ -52,7 +52,7 @@ export default function Attention() {
   const isIdle = items.length === 0 && !question
 
   return (
-    <GameLayout title="Визуальное внимание">
+    <GameLayout title="Запомни элементы">
       {/* ОЧКИ */}
       <ScoreBlock
         score={score}

@@ -9,41 +9,30 @@ function randomColor() {
   return COLORS[Math.floor(Math.random() * COLORS.length)]
 }
 
-function isValid(items: AttentionItem[]) {
-  for (let i = 3; i < items.length; i++) {
-    if (
-      items[i].shape === items[i - 1].shape &&
-      items[i].shape === items[i - 2].shape &&
-      items[i].shape === items[i - 3].shape
-    )
-      return false
-
-    if (
-      items[i].color === items[i - 1].color &&
-      items[i].color === items[i - 2].color &&
-      items[i].shape === items[i - 3].shape
-    )
-      return false
-  }
-  return true
-}
-
 export function generateItems(count: number): AttentionItem[] {
-  let attempts = 0
+  const items: AttentionItem[] = []
 
-  while (attempts < 1000) {
-    const items = Array.from({ length: count }, () => ({
-      shape: randomShape(),
-      color: randomColor(),
-    }))
+  const shapeCount = new Map<string, number>()
+  const colorCount = new Map<string, number>()
 
-    if (isValid(items)) return items
-    attempts++
+  for (let i = 0; i < count; i++) {
+    const shape = randomShape()
+    const color = randomColor()
+
+    const shapeUsed = shapeCount.get(shape) || 0
+    const colorUsed = colorCount.get(color) || 0
+
+    // Не больше 3 повторений одной формы или цвета
+    if (shapeUsed >= 3 || colorUsed >= 3) {
+      i--
+      continue
+    }
+
+    items.push({ shape, color })
+
+    shapeCount.set(shape, shapeUsed + 1)
+    colorCount.set(color, colorUsed + 1)
   }
 
-  // fallback (никогда почти не используется)
-  return Array.from({ length: count }, () => ({
-    shape: randomShape(),
-    color: randomColor(),
-  }))
+  return items
 }

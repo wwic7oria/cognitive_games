@@ -3,6 +3,7 @@ import type { Difficulty, GameState } from './types'
 import { SIZE_MAP, MAX_LENGTH_MAP } from './constants'
 import { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
 import { generateSequence } from './utils'
+import { SPEED_MAP } from './constants'
 
 export function useSequenceGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
@@ -29,11 +30,13 @@ export function useSequenceGame() {
   const baseScore = BASE_SCORE_MAP[difficulty]
   const penalty = PENALTY_MAP[difficulty]
 
+  const speed = SPEED_MAP[difficulty]
+
   const cells = Array.from({ length: size * size }, (_, i) => i)
 
   const showPopup = (text: string) => {
     setScorePopup(text)
-    setTimeout(() => setScorePopup(''), 800)
+    setTimeout(() => setScorePopup(''), 1000)
   }
 
   const playSequence = (seq: number[]) => {
@@ -56,8 +59,8 @@ export function useSequenceGame() {
         timeoutRef.current = window.setTimeout(() => {
           i++
           playNext()
-        }, 300)
-      }, 600)
+        }, speed.gap)
+      }, speed.show)
     }
 
     playNext()

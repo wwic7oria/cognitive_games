@@ -46,7 +46,7 @@ export function useAttentionGame() {
 
   const showPopup = (t: string) => {
     setPopup(t)
-    setTimeout(() => setPopup(''), 10)
+    setTimeout(() => setPopup(''), 1000)
   }
 
   const buildQuestion = (
@@ -83,7 +83,7 @@ export function useAttentionGame() {
 
       setQuestion(`Сколько ${SHAPE_EMOJI[shape]}?`)
       setOptions(
-        [0, 1, 2, 3, 4].map(n => ({
+        [0, 1, 2, 3].map(n => ({
           label: String(n),
           value: n === count,
         })),
