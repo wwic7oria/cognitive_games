@@ -248,25 +248,21 @@ button.selected {
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
-  border: 2px solid #2a2a2a;
-  background: #444;
+  background: transparent;
+  border: none;
 }
 
 .emoji-row {
   width: 80px;
   height: 80px;
+  font-size: 30px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
-  border: 2px solid #2a2a2a;
-
-  background: #444;
-
-  font-size: 30px;
+  background: transparent;
+  border: none;
 }
 /* =========================
    СТАТУС
