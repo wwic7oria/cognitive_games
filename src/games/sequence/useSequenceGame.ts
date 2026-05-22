@@ -23,6 +23,10 @@ export function useSequenceGame() {
   const [gameState, setGameState] = useState<GameState>('idle')
   const [result, setResult] = useState<null | 'win' | 'lose'>(null)
 
+  // Session tracking
+  const [roundCount, setRoundCount] = useState(0)
+  const [bestScore, setBestScore] = useState(0)
+
   const timeoutRef = useRef<number | null>(null)
 
   const size = SIZE_MAP[difficulty]
@@ -91,8 +95,11 @@ export function useSequenceGame() {
       setWrongClick(id)
       setTimeout(() => setWrongClick(null), 300)
 
-      setScore(prev => prev - penalty)
+      const newScore = score - penalty
+      setScore(newScore)
       showPopup(`-${penalty}`)
+
+      setRoundCount(prev => prev + 1)
 
       setGameState('idle')
       setUserInput([])
@@ -104,8 +111,12 @@ export function useSequenceGame() {
     setTimeout(() => setLastClicked(null), 200)
 
     if (newInput.length === sequence.length) {
-      setScore(prev => prev + baseScore)
+      const newScore = score + baseScore
+      setScore(newScore)
       showPopup(`+${baseScore}`)
+
+      setBestScore(prev => Math.max(prev, newScore))
+      setRoundCount(prev => prev + 1)
 
       setResult('win')
       setGameState('idle')
@@ -123,6 +134,8 @@ export function useSequenceGame() {
     setResult(null)
     setScore(0)
     setCurrentLength(3)
+    setRoundCount(0)
+    setBestScore(0)
   }, [difficulty])
 
   useEffect(() => {
@@ -145,6 +158,8 @@ export function useSequenceGame() {
     wrongClick,
     gameState,
     result,
+    roundCount,
+    bestScore,
     startGame,
     handleClick,
   }

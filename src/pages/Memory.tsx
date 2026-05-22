@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import {
   useMemoryGame,
   rulesByDifficulty,
@@ -20,19 +20,10 @@ export default function Memory() {
 
   const navigate = useNavigate()
 
-  // Защита от повторного сохранения результата
-  const savedRef = useRef(false)
-
-  // Старт игры и сброс флага сохранения
+  // Старт игры
   useEffect(() => {
     initGame('easy')
-    savedRef.current = false
   }, [])
-
-  // Если меняется сложность флаг тоже сбрасывается, чтобы можно было сохранять результат при смене сложности
-  useEffect(() => {
-    savedRef.current = false
-  }, [difficulty])
 
   const isWin = cards.length > 0 && cards.every(c => c.isMatched)
 
@@ -69,9 +60,6 @@ export default function Memory() {
         size={size}
         isWin={cards.length > 0 && cards.every(c => c.isMatched)}
       />
-
-      {/* ПРОВЕРКА НА ПОБЕДУ */}
-      {isWin && <h3 className="win-text">Победа 🏆</h3>}
 
       {/* ДЕЙСТВИЯ */}
       <div className="buttons-row section">

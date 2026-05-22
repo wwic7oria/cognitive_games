@@ -1,7 +1,10 @@
 export type GameId = 'memory' | 'sequence' | 'attention'
 
 export type GameResult = {
-  score: number
+  score?: number
+  roundCount?: number
+  bestScore?: number
+  totalScore?: number
   difficulty: string
   playedAt: number
 }
@@ -52,6 +55,65 @@ export const progressStore = {
       difficulty,
       playedAt: Date.now(),
     })
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  },
+
+  addSessionResult(
+    game: GameId,
+    roundCount: number,
+    bestScore: number,
+    totalScore: number,
+    difficulty: string,
+  ) {
+    const state = getState()
+
+    state[game].push({
+      roundCount,
+      bestScore,
+      totalScore,
+      difficulty,
+      playedAt: Date.now(),
+    })
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  },
+
+  // Migrate old attention/sequence data to new session format
+  migrateOldData() {
+    const state = getState()
+
+    // Migrate old sequence data (individual scores instead of sessions)
+    if (state.sequence.length > 0 && state.sequence[0].score !== undefined) {
+      const oldSequence = state.sequence as Array<{
+        score: number
+        difficulty: string
+        playedAt: number
+      }>
+      state.sequence = oldSequence.map(item => ({
+        roundCount: 1,
+        bestScore: Math.max(0, item.score),
+        totalScore: item.score,
+        difficulty: item.difficulty,
+        playedAt: item.playedAt,
+      }))
+    }
+
+    // Migrate old attention data (individual scores instead of sessions)
+    if (state.attention.length > 0 && state.attention[0].score !== undefined) {
+      const oldAttention = state.attention as Array<{
+        score: number
+        difficulty: string
+        playedAt: number
+      }>
+      state.attention = oldAttention.map(item => ({
+        roundCount: 1,
+        bestScore: Math.max(0, item.score),
+        totalScore: item.score,
+        difficulty: item.difficulty,
+        playedAt: item.playedAt,
+      }))
+    }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   },

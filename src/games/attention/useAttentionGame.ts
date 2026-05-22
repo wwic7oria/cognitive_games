@@ -11,6 +11,7 @@ import {
 import type { AttentionItem, Phase, AnswerOption } from './types'
 import { generateItems } from './utils'
 import { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
+import { progressStore } from '../../stats/progressStore'
 
 export function useAttentionGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
@@ -117,11 +118,19 @@ export function useAttentionGame() {
     const base = BASE_SCORE_MAP[difficulty]
     const penalty = PENALTY_MAP[difficulty]
 
+    // Обновление счета в статистике
+
     if (value) {
       setScore(s => s + base)
+
+      progressStore.addScore('attention', base, difficulty)
+
       showPopup(`+${base}`)
     } else {
       setScore(s => s - penalty)
+
+      progressStore.addScore('attention', -penalty, difficulty)
+
       showPopup(`-${penalty}`)
     }
 

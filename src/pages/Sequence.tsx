@@ -12,7 +12,7 @@ import {
   GameLayout,
 } from '../components'
 import { SequenceGrid } from '../components/grids'
-import { useGameResult } from '../hooks/useGameResult'
+import { progressStore } from '../stats/progressStore'
 
 export default function Sequence() {
   const {
@@ -29,37 +29,64 @@ export default function Sequence() {
     wrongClick,
     gameState,
     result,
+    roundCount,
+    bestScore,
     startGame,
     handleClick,
   } = useSequenceGame()
 
   const navigate = useNavigate()
 
-  // Защита от повторного сохранения
-  const savedRef = useRef(false)
+  // Ref for current session state
+  const sessionRef = useRef({
+    roundCount: 0,
+    bestScore: 0,
+    score: 0,
+    difficulty: 'easy',
+  })
 
-  // Стартовая инициализация
+  // Update ref whenever these values change
+  useEffect(() => {
+    sessionRef.current = { roundCount, bestScore, score, difficulty }
+  }, [roundCount, bestScore, score, difficulty])
+
+  // Initialize on mount
   useEffect(() => {
     setDifficulty('easy')
-    savedRef.current = false
   }, [])
 
-  // Сброс флага при смене сложности
-  useEffect(() => {
-    savedRef.current = false
-  }, [difficulty])
+  // Save session on difficulty change
+  const handleDifficultyChange = (value: Difficulty) => {
+    if (sessionRef.current.roundCount > 0) {
+      progressStore.addSessionResult(
+        'sequence',
+        sessionRef.current.roundCount,
+        sessionRef.current.bestScore,
+        sessionRef.current.score,
+        sessionRef.current.difficulty,
+      )
+    }
+    setDifficulty(value)
+  }
 
-  // СОХРАНЕНИЕ РЕЗУЛЬТАТА
-  useGameResult({
-    game: 'sequence',
-    score,
-    difficulty,
-    shouldSave: result === 'win',
-  })
+  // Save session on unmount
+  useEffect(() => {
+    return () => {
+      if (sessionRef.current.roundCount > 0) {
+        progressStore.addSessionResult(
+          'sequence',
+          sessionRef.current.roundCount,
+          sessionRef.current.bestScore,
+          sessionRef.current.score,
+          sessionRef.current.difficulty,
+        )
+      }
+    }
+  }, [])
 
   return (
     <GameLayout title="Повтор последовательности">
-      {/* ОЧКИ */}
+      {/* SCORE */}
       <ScoreBlock
         score={score}
         popup={scorePopup}
@@ -67,7 +94,7 @@ export default function Sequence() {
 
       <DifficultySelector
         current={difficulty}
-        onChange={value => setDifficulty(value as Difficulty)}
+        onChange={value => handleDifficultyChange(value as Difficulty)}
         options={[
           { value: 'easy', label: 'Лёгкий (2x2)' },
           { value: 'medium', label: 'Средний (3x3)' },
@@ -75,7 +102,7 @@ export default function Sequence() {
         ]}
       />
 
-      {/* ИНФОРМАЦИЯ О ДЛИНЕ ПОСЛЕДОВАТЕЛЬНОСТИ */}
+      {/* SEQUENCE LENGTH INFO */}
       <div
         className="section"
         style={{ fontWeight: 600 }}
@@ -83,7 +110,7 @@ export default function Sequence() {
         Длина последовательности: {currentLength} из {maxLength}
       </div>
 
-      {/* ПОЛЕ */}
+      {/* GRID */}
       <SequenceGrid
         cells={cells}
         size={size}
@@ -94,20 +121,20 @@ export default function Sequence() {
         onClick={handleClick}
       />
 
-      {/* СТАТУС */}
+      {/* STATUS */}
       <div className="section">
         {gameState === 'showing' && <h3>Запоминай...</h3>}
         {gameState === 'input' && <h3>Повтори</h3>}
       </div>
 
-      {/* РЕЗУЛЬТАТ */}
+      {/* RESULT */}
       {result === 'win' && <h3 className="win-text">Победа 🎉</h3>}
       {result === 'lose' && <h3 className="error-text">Ошибка ❌</h3>}
 
-      {/* УПРАВЛЕНИЕ */}
+      {/* CONTROLS */}
       {gameState === 'idle' && <button onClick={startGame}>Начать ▶</button>}
 
-      {/* ПРАВИЛА */}
+      {/* RULES */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
       <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>

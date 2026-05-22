@@ -4,26 +4,57 @@ import type { GameId } from '../stats/progressStore'
 
 type Params = {
   game: GameId
-  score: number
+  score?: number
   difficulty: string
   shouldSave: boolean
+  roundCount?: number
+  bestScore?: number
+  totalScore?: number
 }
 
-export function useGameResult({ game, score, difficulty, shouldSave }: Params) {
+export function useGameResult({
+  game,
+  score,
+  difficulty,
+  shouldSave,
+  roundCount,
+  bestScore,
+  totalScore,
+}: Params) {
   const savedRef = useRef(false)
 
-  // сброс при смене сложности
+  // Reset when difficulty changes
   useEffect(() => {
     savedRef.current = false
   }, [difficulty])
 
-  // сохранение результата
+  // Save result
   useEffect(() => {
     if (!shouldSave) return
     if (savedRef.current) return
 
+    // For sequence: check roundCount
+    if (roundCount !== undefined && roundCount === 0) return
+
     savedRef.current = true
 
-    progressStore.addScore(game, score, difficulty)
-  }, [shouldSave, score, difficulty, game])
+    // Sequence uses session-based saving
+    if (
+      roundCount !== undefined &&
+      bestScore !== undefined &&
+      totalScore !== undefined
+    ) {
+      progressStore.addSessionResult(
+        game,
+        roundCount,
+        bestScore,
+        totalScore,
+        difficulty,
+      )
+    }
+    // Memory and Attention use single-game saving
+    else if (score !== undefined) {
+      progressStore.addScore(game, score, difficulty)
+    }
+  }, [shouldSave, score, roundCount, bestScore, totalScore, difficulty, game])
 }
