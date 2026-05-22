@@ -29,7 +29,6 @@ export function SequenceGrid({
 
         return (
           <div
-            key={id}
             onClick={() => onClick(id)}
             className={`
               card
@@ -40,9 +39,7 @@ export function SequenceGrid({
             style={{
               cursor: gameState === 'input' ? 'pointer' : 'not-allowed',
             }}
-          >
-            {id}
-          </div>
+          ></div>
         )
       })}
     </div>
