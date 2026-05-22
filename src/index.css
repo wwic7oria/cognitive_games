@@ -189,9 +189,9 @@ button.selected {
   user-select: none;
 
   transition:
-    transform 0.12s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
+    transform 0.1s ease,
+    background 0.1s ease,
+    border-color 0.1s ease;
 }
 
 .card:hover {

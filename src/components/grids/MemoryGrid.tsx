@@ -20,7 +20,7 @@ export function MemoryGrid({ cards, onCardClick, size, isWin }: Props) {
               card.isFlipped || card.isMatched ? 'flipped' : ''
             } ${card.isMatched ? 'matched' : ''}`}
           >
-            {card.isFlipped || card.isMatched ? card.value : '?'}
+            {card.isFlipped || card.isMatched ? card.value : ''}
           </div>
         ))}
       </div>
