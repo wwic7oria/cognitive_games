@@ -37,7 +37,7 @@ export default function Memory() {
 
   return (
     <GameLayout title="Поиск карточек">
-      {/* ОЧКИ */}
+      {/* СЧЁТ */}
       <ScoreBlock
         score={score}
         popup={scorePopup}

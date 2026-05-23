@@ -23,7 +23,7 @@ export function useSequenceGame() {
   const [gameState, setGameState] = useState<GameState>('idle')
   const [result, setResult] = useState<null | 'win' | 'lose'>(null)
 
-  // Session tracking
+  // SESSION STATS
   const [roundCount, setRoundCount] = useState(0)
   const [bestScore, setBestScore] = useState(0)
 

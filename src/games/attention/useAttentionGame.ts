@@ -11,7 +11,6 @@ import {
 import type { AttentionItem, Phase, AnswerOption } from './types'
 import { generateItems } from './utils'
 import { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
-import { progressStore } from '../../stats/progressStore'
 
 export function useAttentionGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
@@ -24,6 +23,12 @@ export function useAttentionGame() {
 
   const [score, setScore] = useState(0)
   const [popup, setPopup] = useState<string | null>(null)
+
+  const [isCorrect, setIsCorrect] = useState(false)
+
+  // SESSION STATS
+  const [roundCount, setRoundCount] = useState(0)
+  const [bestScore, setBestScore] = useState(0)
 
   const timeoutRef = useRef<number | null>(null)
 
@@ -38,26 +43,27 @@ export function useAttentionGame() {
     setOptions([])
     setPhase('show')
     setPopup(null)
+
+    setScore(0)
+    setRoundCount(0)
+    setBestScore(0)
   }
 
-  const changeDifficulty = (d: Difficulty) => {
+  const changeDifficulty = (diff: Difficulty) => {
     reset()
-    setDifficulty(d)
+    setDifficulty(diff)
   }
 
   const showPopup = (t: string) => {
     setPopup(t)
-    setTimeout(() => setPopup(''), 1000)
+    setTimeout(() => setPopup(null), 1000)
   }
 
-  const buildQuestion = (
-    data: AttentionItem[],
-    currentDifficulty: Difficulty,
-  ) => {
+  const buildQuestion = (data: AttentionItem[], diff: Difficulty) => {
     const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)]
     const color = COLORS[Math.floor(Math.random() * COLORS.length)]
 
-    if (currentDifficulty === 'easy') {
+    if (diff === 'easy') {
       const count = data.filter(i => i.color === color).length
 
       setQuestion(`Сколько ${COLOR_EMOJI[color]}?`)
@@ -69,7 +75,7 @@ export function useAttentionGame() {
       )
     }
 
-    if (currentDifficulty === 'medium') {
+    if (diff === 'medium') {
       const count = data.filter(i => i.shape === shape).length
 
       setQuestion(`Был ли ${SHAPE_EMOJI[shape]}?`)
@@ -79,7 +85,7 @@ export function useAttentionGame() {
       ])
     }
 
-    if (currentDifficulty === 'hard') {
+    if (diff === 'hard') {
       const count = data.filter(i => i.shape === shape).length
 
       setQuestion(`Сколько ${SHAPE_EMOJI[shape]}?`)
@@ -98,18 +104,15 @@ export function useAttentionGame() {
       timeoutRef.current = null
     }
 
-    const currentDifficulty = difficulty
-    const currentSize = SIZE_MAP[currentDifficulty]
-
-    const newItems = generateItems(currentSize)
+    const newItems = generateItems(SIZE_MAP[difficulty])
 
     setItems(newItems)
     setPhase('show')
 
     timeoutRef.current = window.setTimeout(() => {
-      buildQuestion(newItems, currentDifficulty)
+      buildQuestion(newItems, difficulty)
       setPhase('question')
-    }, SHOW_TIME[currentDifficulty])
+    }, SHOW_TIME[difficulty])
   }
 
   const submitAnswer = (value: boolean) => {
@@ -118,43 +121,50 @@ export function useAttentionGame() {
     const base = BASE_SCORE_MAP[difficulty]
     const penalty = PENALTY_MAP[difficulty]
 
-    // Обновление счета в статистике
+    let delta = 0
 
     if (value) {
-      setScore(s => s + base)
-
-      progressStore.addScore('attention', base, difficulty)
-
+      delta = base
       showPopup(`+${base}`)
     } else {
-      setScore(s => s - penalty)
-
-      progressStore.addScore('attention', -penalty, difficulty)
-
+      delta = -penalty
       showPopup(`-${penalty}`)
     }
 
-    setPhase('result')
+    setScore(prev => {
+      const newScore = prev + delta
+
+      setBestScore(b => Math.max(b, newScore))
+
+      return newScore
+    })
+
+    setRoundCount(prev => prev + 1)
 
     setItems([])
     setQuestion(null)
     setOptions([])
+    setPhase('show')
 
-    setTimeout(() => {
-      setPhase('show')
-    }, 0)
+    setIsCorrect(value)
   }
 
   return {
-    reset,
     difficulty,
     changeDifficulty,
+
     items,
     phase,
     question,
     options,
+
     score,
     popup,
+    isCorrect,
+
+    roundCount,
+    bestScore,
+
     startRound,
     submitAnswer,
   }

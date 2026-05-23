@@ -16,10 +16,9 @@ import {
   QuestionBlock,
 } from '../components'
 import { AttentionGrid } from '../components/grids'
-import { useGameResult } from '../hooks/useGameResult'
+import { progressStore } from '../stats/progressStore'
 
 export default function Attention() {
-  const navigate = useNavigate()
   const {
     difficulty,
     changeDifficulty,
@@ -29,39 +28,67 @@ export default function Attention() {
     options,
     score,
     popup,
+    roundCount,
+    bestScore,
     startRound,
     submitAnswer,
   } = useAttentionGame()
 
+  const navigate = useNavigate()
+
   const size = SIZE_MAP[difficulty]
   const gridCols = Math.ceil(Math.sqrt(size))
 
-  const savedRef = useRef(false)
-
-  // Стартовая инициализация
-  useEffect(() => {
-    changeDifficulty('easy')
-    savedRef.current = false
-  }, [])
-
-  // Сброс флага при смене сложности
-  useEffect(() => {
-    savedRef.current = false
-  }, [difficulty])
-
-  // СОХРАНЕНИЕ РЕЗУЛЬТАТА
-  useGameResult({
-    game: 'attention',
-    score,
-    difficulty,
-    shouldSave: phase === 'result',
+  // Ref для хранения текущей игровой сессии
+  const sessionRef = useRef({
+    roundCount: 0,
+    bestScore: 0,
+    score: 0,
+    difficulty: 'easy' as Difficulty,
   })
 
-  const isIdle = items.length === 0 && !question
+  // Обновление ref
+  useEffect(() => {
+    sessionRef.current = {
+      roundCount,
+      bestScore,
+      score,
+      difficulty,
+    }
+  }, [roundCount, bestScore, score, difficulty])
+
+  // Сохранение результатов при смене сложности
+  const handleDifficultyChange = (value: Difficulty) => {
+    if (sessionRef.current.roundCount > 0) {
+      progressStore.addSessionResult(
+        'attention',
+        sessionRef.current.roundCount,
+        sessionRef.current.bestScore,
+        sessionRef.current.score,
+        sessionRef.current.difficulty,
+      )
+    }
+    changeDifficulty(value)
+  }
+
+  // Сохранение результатов при уходе со страницы
+  useEffect(() => {
+    return () => {
+      if (sessionRef.current.roundCount > 0) {
+        progressStore.addSessionResult(
+          'attention',
+          sessionRef.current.roundCount,
+          sessionRef.current.bestScore,
+          sessionRef.current.score,
+          sessionRef.current.difficulty,
+        )
+      }
+    }
+  }, [])
 
   return (
     <GameLayout title="Запомни элементы">
-      {/* ОЧКИ */}
+      {/* СЧЁТ */}
       <ScoreBlock
         score={score}
         popup={popup}
@@ -70,7 +97,7 @@ export default function Attention() {
       {/* СЛОЖНОСТЬ */}
       <DifficultySelector
         current={difficulty}
-        onChange={value => changeDifficulty(value as Difficulty)}
+        onChange={value => handleDifficultyChange(value as Difficulty)}
         options={[
           { value: 'easy', label: 'Легкий (6 элементов)' },
           { value: 'medium', label: 'Средний (8 элементов)' },
@@ -78,14 +105,9 @@ export default function Attention() {
         ]}
       />
 
-      {/* КНОПКА НАЧАЛА РАУНДА */}
-      {isIdle && (
-        <button
-          onClick={startRound}
-          style={{ marginTop: '20px', fontSize: '20px' }}
-        >
-          Начать раунд ▶
-        </button>
+      {/* УПРАВЛЕНИЕ */}
+      {phase === 'show' && items.length === 0 && (
+        <button onClick={startRound}>Начать раунд ▶</button>
       )}
 
       {/* ПОЛЕ */}
@@ -109,10 +131,7 @@ export default function Attention() {
       )}
 
       {/* ПРАВИЛА */}
-      <RulesBlock
-        intro="На экране показываются элементы. Запомните их и ответьте на вопрос выше."
-        rules={rulesByDifficulty[difficulty]}
-      />
+      <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
       <div className="buttons-row">
         <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>

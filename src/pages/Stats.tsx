@@ -5,7 +5,7 @@ import { progressStore } from '../stats/progressStore'
 export default function Stats() {
   const navigate = useNavigate()
 
-  // Migrate old data on first load
+  // Миграция старых данных при загрузке страницы
   useEffect(() => {
     progressStore.migrateOldData()
   }, [])
@@ -18,22 +18,22 @@ export default function Stats() {
 
   const getGamesPlayed = (arr: typeof memoryResults) => {
     return arr.reduce((sum, r) => {
-      // For sequence (session-based)
+      // Для sequense и attention (session-based)
       if (r.roundCount !== undefined) {
         return sum + r.roundCount
       }
-      // For memory/attention (single-game based)
+      // Для memory (single-game based)
       return sum + 1
     }, 0)
   }
 
   const getTotalScore = (arr: typeof memoryResults) => {
     return arr.reduce((sum, r) => {
-      // For sequence (session-based)
+      // Для sequense и attention
       if (r.totalScore !== undefined) {
         return sum + r.totalScore
       }
-      // For memory/attention (single-game based)
+      // Для memory
       if (r.score !== undefined) {
         return sum + r.score
       }
@@ -41,41 +41,16 @@ export default function Stats() {
     }, 0)
   }
 
-  // Calculate best score for attention (consecutive winning runs)
-  const getAttentionBestScore = (arr: typeof attentionResults) => {
+  const getBestScore = (arr: typeof memoryResults) => {
     if (!arr.length) return 0
-
-    let maxSum = 0
-    let currentSum = 0
-
-    for (const result of arr) {
-      const score = result.totalScore || result.score || 0
-      currentSum += score
-      maxSum = Math.max(maxSum, currentSum)
-      // Reset if we hit negative
-      if (currentSum < 0) {
-        currentSum = 0
-      }
-    }
-
-    return maxSum
-  }
-
-  const getBestScore = (arr: typeof memoryResults, gameType?: 'attention') => {
-    if (!arr.length) return 0
-
-    // For attention, use consecutive win calculation
-    if (gameType === 'attention') {
-      return getAttentionBestScore(arr)
-    }
 
     return Math.max(
       ...arr.map(r => {
-        // For sequence (session-based)
+        // Для sequense и attention
         if (r.bestScore !== undefined) {
           return r.bestScore
         }
-        // For memory/attention (single-game based)
+        // Для memory
         if (r.score !== undefined) {
           return r.score
         }
@@ -117,11 +92,11 @@ export default function Stats() {
           <h3>🎯 Вспомни элементы</h3>
           <p>Игр сыграно: {getGamesPlayed(attentionResults)}</p>
           <p>Сумма очков: {getTotalScore(attentionResults)}</p>
-          <p>Лучший результат: {getBestScore(attentionResults, 'attention')}</p>
+          <p>Лучший результат: {getBestScore(attentionResults)}</p>
           <p>Средний результат: {getAvgScore(attentionResults)}</p>
         </div>
 
-        {/* Back */}
+        {/* НАЗАД */}
         <div style={{ marginTop: 40 }}>
           <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
         </div>

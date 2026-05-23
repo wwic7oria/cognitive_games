@@ -37,7 +37,7 @@ export default function Sequence() {
 
   const navigate = useNavigate()
 
-  // Ref for current session state
+  // Ref для хранения текущей игровой сессии
   const sessionRef = useRef({
     roundCount: 0,
     bestScore: 0,
@@ -45,17 +45,17 @@ export default function Sequence() {
     difficulty: 'easy',
   })
 
-  // Update ref whenever these values change
+  // Обновление ref
   useEffect(() => {
     sessionRef.current = { roundCount, bestScore, score, difficulty }
   }, [roundCount, bestScore, score, difficulty])
 
-  // Initialize on mount
+  // Инициализация сложности при загрузке страницы
   useEffect(() => {
     setDifficulty('easy')
   }, [])
 
-  // Save session on difficulty change
+  // Сохранение результатов при смене сложности
   const handleDifficultyChange = (value: Difficulty) => {
     if (sessionRef.current.roundCount > 0) {
       progressStore.addSessionResult(
@@ -69,7 +69,7 @@ export default function Sequence() {
     setDifficulty(value)
   }
 
-  // Save session on unmount
+  // Сохранение результатов при уходе со страницы
   useEffect(() => {
     return () => {
       if (sessionRef.current.roundCount > 0) {
@@ -86,7 +86,7 @@ export default function Sequence() {
 
   return (
     <GameLayout title="Повтор последовательности">
-      {/* SCORE */}
+      {/* СЧЁТ */}
       <ScoreBlock
         score={score}
         popup={scorePopup}
@@ -102,7 +102,7 @@ export default function Sequence() {
         ]}
       />
 
-      {/* SEQUENCE LENGTH INFO */}
+      {/* ИНФОРМАЦИЯ О ДЛИНЕ ПОСЛЕДОВАТЕЛЬНОСТИ */}
       <div
         className="section"
         style={{ fontWeight: 600 }}
@@ -110,7 +110,7 @@ export default function Sequence() {
         Длина последовательности: {currentLength} из {maxLength}
       </div>
 
-      {/* GRID */}
+      {/* ПОЛЕ */}
       <SequenceGrid
         cells={cells}
         size={size}
@@ -121,20 +121,20 @@ export default function Sequence() {
         onClick={handleClick}
       />
 
-      {/* STATUS */}
+      {/* СТАТУС */}
       <div className="section">
         {gameState === 'showing' && <h3>Запоминай...</h3>}
         {gameState === 'input' && <h3>Повтори</h3>}
       </div>
 
-      {/* RESULT */}
+      {/* РЕЗУЛЬТАТ */}
       {result === 'win' && <h3 className="win-text">Победа 🎉</h3>}
       {result === 'lose' && <h3 className="error-text">Ошибка ❌</h3>}
 
-      {/* CONTROLS */}
+      {/* УПРАВЛЕНИЕ */}
       {gameState === 'idle' && <button onClick={startGame}>Начать ▶</button>}
 
-      {/* RULES */}
+      {/* ПРАВИЛА */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
       <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
