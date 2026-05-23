@@ -16,7 +16,7 @@ import {
   QuestionBlock,
 } from '../components'
 import { AttentionGrid } from '../components/grids'
-import { progressStore } from '../stats/progressStore'
+import { useGameResult } from '../hooks/useGameResult'
 
 export default function Attention() {
   const navigate = useNavigate()
@@ -29,8 +29,6 @@ export default function Attention() {
     options,
     score,
     popup,
-    roundCount,
-    bestScore,
     startRound,
     submitAnswer,
   } = useAttentionGame()
@@ -38,47 +36,26 @@ export default function Attention() {
   const size = SIZE_MAP[difficulty]
   const gridCols = Math.ceil(Math.sqrt(size))
 
-  // Ref for current session state
-  const sessionRef = useRef({
-    roundCount: 0,
-    bestScore: 0,
-    score: 0,
-    difficulty: 'easy',
-  })
+  const savedRef = useRef(false)
 
-  // Update ref whenever these values change
+  // Стартовая инициализация
   useEffect(() => {
-    sessionRef.current = { roundCount, bestScore, score, difficulty }
-  }, [roundCount, bestScore, score, difficulty])
-
-  // Save session on difficulty change
-  const handleDifficultyChange = (value: Difficulty) => {
-    if (sessionRef.current.roundCount > 0) {
-      progressStore.addSessionResult(
-        'attention',
-        sessionRef.current.roundCount,
-        sessionRef.current.bestScore,
-        sessionRef.current.score,
-        sessionRef.current.difficulty,
-      )
-    }
-    changeDifficulty(value)
-  }
-
-  // Save session on unmount
-  useEffect(() => {
-    return () => {
-      if (sessionRef.current.roundCount > 0) {
-        progressStore.addSessionResult(
-          'attention',
-          sessionRef.current.roundCount,
-          sessionRef.current.bestScore,
-          sessionRef.current.score,
-          sessionRef.current.difficulty,
-        )
-      }
-    }
+    changeDifficulty('easy')
+    savedRef.current = false
   }, [])
+
+  // Сброс флага при смене сложности
+  useEffect(() => {
+    savedRef.current = false
+  }, [difficulty])
+
+  // СОХРАНЕНИЕ РЕЗУЛЬТАТА
+  useGameResult({
+    game: 'attention',
+    score,
+    difficulty,
+    shouldSave: phase === 'result',
+  })
 
   const isIdle = items.length === 0 && !question
 
@@ -93,7 +70,7 @@ export default function Attention() {
       {/* СЛОЖНОСТЬ */}
       <DifficultySelector
         current={difficulty}
-        onChange={value => handleDifficultyChange(value as Difficulty)}
+        onChange={value => changeDifficulty(value as Difficulty)}
         options={[
           { value: 'easy', label: 'Легкий (6 элементов)' },
           { value: 'medium', label: 'Средний (8 элементов)' },
