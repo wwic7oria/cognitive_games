@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   useSequenceGame,
   rulesByDifficulty,
+  baseRules,
   type Difficulty,
 } from '../games/sequence'
 import {
@@ -147,7 +148,7 @@ export default function Sequence() {
       </div>
 
       {/* ПРАВИЛА */}
-      <RulesBlock rules={rulesByDifficulty[difficulty]} />
+      <RulesBlock rules={[...baseRules, ...rulesByDifficulty[difficulty]]} />
 
       <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
     </GameLayout>

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import {
   useAttentionGame,
   SIZE_MAP,
+  baseRules,
   rulesByDifficulty,
   SHAPE_EMOJI,
   COLOR_EMOJI,
@@ -157,7 +158,7 @@ export default function Attention() {
       </div>
 
       {/* ПРАВИЛА */}
-      <RulesBlock rules={rulesByDifficulty[difficulty]} />
+      <RulesBlock rules={[...baseRules, ...rulesByDifficulty[difficulty]]} />
 
       <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
     </GameLayout>

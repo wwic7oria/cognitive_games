@@ -1,7 +1,7 @@
 import type { Card } from './types'
 import { EMOJIS } from './constants'
 
-// Создает поле с карточками
+// Генерация карточек
 
 export const generateCards = (size: number): Card[] => {
   const pairsCount = (size * size) / 2

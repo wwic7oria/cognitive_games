@@ -1,7 +1,7 @@
 type Rule = {
-  value: string
+  value?: string
   text: string
-  color: string
+  color?: string
 }
 
 type RulesBlockProps = {

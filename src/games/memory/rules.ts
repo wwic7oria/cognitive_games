@@ -1,3 +1,9 @@
+export const baseRules = [
+  {
+    text: 'На поле находятся перевернутые карточки. Необходимо найти все пары.',
+  },
+] as const
+
 export const rulesByDifficulty = {
   easy: [
     {

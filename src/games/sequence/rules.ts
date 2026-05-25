@@ -1,3 +1,9 @@
+export const baseRules = [
+  {
+    text: 'На экране будут подсвечиваться кнопки. Запомните последовательность и повторите её, кликая по кнопкам в правильном порядке.',
+  },
+] as const
+
 export const rulesByDifficulty = {
   easy: [
     {

@@ -17,7 +17,7 @@ export const SIZE_MAP: Record<Difficulty, number> = {
 }
 
 export const SHOW_TIME: Record<Difficulty, number> = {
-  easy: 2000000,
+  easy: 2000,
   medium: 2000,
   hard: 3000,
 }

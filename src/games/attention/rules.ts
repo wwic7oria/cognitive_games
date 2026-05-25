@@ -1,3 +1,9 @@
+export const baseRules = [
+  {
+    text: 'На экране будут появляться эмодзи. Запомните их и ответьте на вопрос.',
+  },
+] as const
+
 export const rulesByDifficulty = {
   easy: [
     {

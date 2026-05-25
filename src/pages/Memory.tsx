@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import {
   useMemoryGame,
   rulesByDifficulty,
+  baseRules,
   type Difficulty,
 } from '../games/memory'
 import {
@@ -75,7 +76,7 @@ export default function Memory() {
       </div>
 
       {/* ПРАВИЛА */}
-      <RulesBlock rules={rulesByDifficulty[difficulty]} />
+      <RulesBlock rules={[...baseRules, ...rulesByDifficulty[difficulty]]} />
 
       <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
     </GameLayout>
