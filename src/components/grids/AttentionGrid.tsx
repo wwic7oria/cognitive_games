@@ -16,7 +16,7 @@ export function AttentionGrid({
   return (
     <div className="section">
       <div
-        className="emoji-grid"
+        className="attention-grid"
         style={{ gridTemplateColumns: `repeat(${gridCols}, 80px)` }}
       >
         {items.map((item, index) => (
@@ -24,7 +24,7 @@ export function AttentionGrid({
             key={index}
             className="attention-card"
           >
-            <div className="emoji-row">
+            <div className="attention-emoji-row">
               {difficulty === 'easy' ? (
                 <span>{COLOR_EMOJI[item.color]}</span>
               ) : (

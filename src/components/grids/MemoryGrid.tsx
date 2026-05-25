@@ -5,12 +5,15 @@ type Props = {
   isWin: boolean
 }
 
-export function MemoryGrid({ cards, onCardClick, size, isWin }: Props) {
+export const CELL_SIZE = 80
+export const GAP_SIZE = 10
+
+export function MemoryGrid({ cards, onCardClick, size }: Props) {
   return (
     <>
       <div
         className="game-grid"
-        style={{ gridTemplateColumns: `repeat(${size}, 80px)` }}
+        style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
       >
         {cards.map(card => (
           <div
@@ -24,8 +27,6 @@ export function MemoryGrid({ cards, onCardClick, size, isWin }: Props) {
           </div>
         ))}
       </div>
-
-      {isWin && <h3 className="win-text">Победа 🏆</h3>}
     </>
   )
 }

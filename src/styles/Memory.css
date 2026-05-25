@@ -1,0 +1,75 @@
+/* =========================
+   ИГРОВОЕ ПОЛЕ С КАРТОЧКАМИ
+========================= */
+
+.game-grid {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 80px);
+
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  max-width: 420px;
+}
+
+/* =========================
+   КАРТОЧКИ
+========================= */
+
+.card {
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+  border: 2px solid #2a2a2a;
+
+  background: #444;
+  color: #444;
+
+  font-size: 30px;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* =========================
+   КАРТОЧКИ - СОСТОЯНИЯ
+========================= */
+
+.card.flipped {
+  background: white;
+  color: black;
+  border-color: #777;
+}
+
+.card.matched {
+  background: #7dff9b;
+  color: black;
+  border-color: #3fcf68;
+}
+
+/* =========================
+   КНОПКА НАЧАТЬ ЗАНОВО
+========================= */
+.memory-status {
+  min-height: 120px;
+  margin-top: 20px;
+}

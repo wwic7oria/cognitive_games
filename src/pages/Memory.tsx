@@ -13,6 +13,8 @@ import {
 } from '../components'
 import { MemoryGrid } from '../components/grids'
 import { useGameResult } from '../hooks/useGameResult'
+import '../styles/Memory.css'
+import '../styles/ui.css'
 
 export default function Memory() {
   const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =
@@ -62,14 +64,18 @@ export default function Memory() {
       />
 
       {/* ДЕЙСТВИЯ */}
-      <div className="buttons-row section">
-        <button onClick={() => initGame(difficulty)}>🔄 Начать заново</button>
+      <div className="status-text">
+        {isWin && <h3 className="status-text win-text">Победа 🏆</h3>}
+
+        <div className="restart-button">
+          <button onClick={() => initGame(difficulty)}>🔄 Начать заново</button>
+        </div>
       </div>
 
       {/* ПРАВИЛА */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
-      <div className="buttons-row section">
+      <div className="restart-button">
         <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
       </div>
     </GameLayout>

@@ -13,6 +13,8 @@ import {
 } from '../components'
 import { SequenceGrid } from '../components/grids'
 import { progressStore } from '../stats/progressStore'
+import '../styles/Sequence.css'
+import '../styles/ui.css'
 
 export default function Sequence() {
   const {
@@ -128,7 +130,7 @@ export default function Sequence() {
       </div>
 
       {/* РЕЗУЛЬТАТ */}
-      {result === 'win' && <h3 className="win-text">Победа 🎉</h3>}
+      {result === 'win' && <h3 className="win-text">Правильно 🎉</h3>}
       {result === 'lose' && <h3 className="error-text">Ошибка ❌</h3>}
 
       {/* УПРАВЛЕНИЕ */}

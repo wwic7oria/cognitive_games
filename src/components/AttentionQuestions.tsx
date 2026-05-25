@@ -11,23 +11,17 @@ type Props = {
 
 export function QuestionBlock({ question, options, onAnswer }: Props) {
   return (
-    <div className="section">
-      <h2
-        style={{
-          marginTop: '30px',
-          marginBottom: '30px',
-          textAlign: 'center',
-        }}
-      >
-        {question}
-      </h2>
+    <div
+      className="section"
+      style={{ marginTop: '0px' }}
+    >
+      <h2 className="status-text">{question}</h2>
 
-      <div className="buttons-row">
+      <div className="attention-buttons">
         {options.map((option, index) => (
           <button
             key={index}
             onClick={() => onAnswer(option.value)}
-            style={{ minWidth: '80px' }}
           >
             {option.label}
           </button>

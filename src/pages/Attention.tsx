@@ -17,13 +17,16 @@ import {
 } from '../components'
 import { AttentionGrid } from '../components/grids'
 import { progressStore } from '../stats/progressStore'
+import '../styles/Attention.css'
+import '../styles/ui.css'
 
 export default function Attention() {
   const {
     difficulty,
     changeDifficulty,
     items,
-    phase,
+    gameState,
+    result,
     question,
     options,
     score,
@@ -105,30 +108,48 @@ export default function Attention() {
         ]}
       />
 
-      {/* УПРАВЛЕНИЕ */}
-      {phase === 'show' && items.length === 0 && (
-        <button onClick={startRound}>Начать раунд ▶</button>
-      )}
-
       {/* ПОЛЕ */}
-      {phase === 'show' && items.length > 0 && (
-        <AttentionGrid
-          items={items}
-          gridCols={gridCols}
-          difficulty={difficulty}
-          SHAPE_EMOJI={SHAPE_EMOJI}
-          COLOR_EMOJI={COLOR_EMOJI}
-        />
-      )}
 
-      {/* ВОПРОСЫ */}
-      {phase === 'question' && (
-        <QuestionBlock
-          question={question}
-          options={options}
-          onAnswer={submitAnswer}
-        />
-      )}
+      <div className="attention-area">
+        {gameState === 'showing' && (
+          <AttentionGrid
+            items={items}
+            gridCols={gridCols}
+            difficulty={difficulty}
+            SHAPE_EMOJI={SHAPE_EMOJI}
+            COLOR_EMOJI={COLOR_EMOJI}
+          />
+        )}
+      </div>
+
+      {/* КНОПКА */}
+      <div className="attention-status">
+        {gameState === 'showing' && (
+          <h3 className="status-text">Запоминай...</h3>
+        )}
+
+        {/* РЕЗУЛЬТАТ */}
+        {result === 'win' && (
+          <h3 className="status-text win-text">Правильно 🎉</h3>
+        )}
+        {result === 'lose' && (
+          <h3 className="status-text error-text">Ошибка ❌</h3>
+        )}
+
+        {/* НАЧАЛО РАУНДА */}
+        {gameState === 'idle' && (
+          <button onClick={startRound}>Начать раунд ▶</button>
+        )}
+
+        {/* ВОПРОС */}
+        {gameState === 'question' && (
+          <QuestionBlock
+            question={question}
+            options={options}
+            onAnswer={submitAnswer}
+          />
+        )}
+      </div>
 
       {/* ПРАВИЛА */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />

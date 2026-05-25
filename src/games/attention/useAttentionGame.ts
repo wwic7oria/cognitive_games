@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Difficulty } from './constants'
 import {
   SIZE_MAP,
@@ -8,25 +8,25 @@ import {
   SHAPE_EMOJI,
   COLOR_EMOJI,
 } from './constants'
-import type { AttentionItem, Phase, AnswerOption } from './types'
+import type { AttentionItem, AnswerOption } from './types'
 import { generateItems } from './utils'
 import { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
+
+type GameState = 'idle' | 'showing' | 'question'
 
 export function useAttentionGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
 
   const [items, setItems] = useState<AttentionItem[]>([])
-  const [phase, setPhase] = useState<Phase>('show')
-
   const [question, setQuestion] = useState<string | null>(null)
   const [options, setOptions] = useState<AnswerOption[]>([])
 
   const [score, setScore] = useState(0)
   const [popup, setPopup] = useState<string | null>(null)
 
-  const [isCorrect, setIsCorrect] = useState(false)
+  const [gameState, setGameState] = useState<GameState>('idle')
+  const [result, setResult] = useState<null | 'win' | 'lose'>(null)
 
-  // SESSION STATS
   const [roundCount, setRoundCount] = useState(0)
   const [bestScore, setBestScore] = useState(0)
 
@@ -41,10 +41,11 @@ export function useAttentionGame() {
     setItems([])
     setQuestion(null)
     setOptions([])
-    setPhase('show')
-    setPopup(null)
+    setGameState('idle')
+    setResult(null)
 
     setScore(0)
+    setPopup(null)
     setRoundCount(0)
     setBestScore(0)
   }
@@ -107,36 +108,29 @@ export function useAttentionGame() {
     const newItems = generateItems(SIZE_MAP[difficulty])
 
     setItems(newItems)
-    setPhase('show')
+    setGameState('showing')
+    setResult(null)
 
     timeoutRef.current = window.setTimeout(() => {
       buildQuestion(newItems, difficulty)
-      setPhase('question')
+      setGameState('question')
     }, SHOW_TIME[difficulty])
   }
 
   const submitAnswer = (value: boolean) => {
-    if (phase !== 'question') return
+    if (gameState !== 'question') return
 
     const base = BASE_SCORE_MAP[difficulty]
     const penalty = PENALTY_MAP[difficulty]
 
-    let delta = 0
+    const delta = value ? base : -penalty
 
-    if (value) {
-      delta = base
-      showPopup(`+${base}`)
-    } else {
-      delta = -penalty
-      showPopup(`-${penalty}`)
-    }
+    showPopup(value ? `+${base}` : `-${penalty}`)
 
     setScore(prev => {
-      const newScore = prev + delta
-
-      setBestScore(b => Math.max(b, newScore))
-
-      return newScore
+      const next = prev + delta
+      setBestScore(b => Math.max(b, next))
+      return next
     })
 
     setRoundCount(prev => prev + 1)
@@ -144,23 +138,31 @@ export function useAttentionGame() {
     setItems([])
     setQuestion(null)
     setOptions([])
-    setPhase('show')
+    setGameState('idle')
 
-    setIsCorrect(value)
+    // Результат - правильно или ошибка
+    setResult(value ? 'win' : 'lose')
   }
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
 
   return {
     difficulty,
     changeDifficulty,
 
     items,
-    phase,
     question,
     options,
 
     score,
     popup,
-    isCorrect,
+
+    gameState,
+    result,
 
     roundCount,
     bestScore,

@@ -1,0 +1,11 @@
+/* =========================
+   СТАТИСТИКА
+========================= */
+.stats-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.stats {
+  text-align: left;
+}

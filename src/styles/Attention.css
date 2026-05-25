@@ -1,0 +1,51 @@
+.attention-area {
+  min-height: 190px;
+}
+
+.attention-card {
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+}
+
+.attention-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 80px);
+
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.attention-status {
+  min-height: 92px;
+}
+
+.attention-emoji-row {
+  width: 80px;
+  height: 80px;
+  font-size: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+}
+
+.attention-buttons {
+  display: flex;
+  font-size: 18px;
+  gap: 5px;
+  min-width: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
