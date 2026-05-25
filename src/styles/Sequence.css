@@ -1,4 +1,30 @@
 /* =========================
+   ИГРОВОЕ ПОЛЕ
+========================= */
+
+.game-grid {
+  display: grid;
+  gap: 10px;
+
+  justify-content: center;
+
+  width: fit-content;
+  max-width: 100%;
+
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
+.sequence-status {
+  min-height: 135px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* =========================
    ДЛЯ ИГРЫ НА ПОВТОР ПОСЛЕДОВАТЕЛЬНОСТИ
 ========================= */
 
@@ -18,4 +44,15 @@
   background: #7dff9b;
   color: black;
   border-color: #3fcf68;
+}
+
+/* =========================
+   ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+========================= */
+
+@media (max-width: 580px) {
+  .game-grid {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
 }

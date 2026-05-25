@@ -18,15 +18,20 @@ body {
 ========================= */
 
 .page {
-  min-height: 100vh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  overflow-x: hidden;
+}
+
+.content {
+  width: min(520px, 100%);
 }
 
 .section {
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   text-align: center;
 }
 

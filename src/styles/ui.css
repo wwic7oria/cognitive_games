@@ -59,6 +59,7 @@
 
 .error-text {
   color: #ff5f5f;
+  font-weight: bold;
 }
 
 .status-text {
@@ -166,4 +167,18 @@ button.selected {
     opacity: 0;
     transform: translateY(-10px);
   }
+}
+
+/* =========================
+    АДАПТАЦИЯ ПОД ТЕЛЕФОНЫ
+========================= */
+
+.game-layout-center {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.game-layout-scale {
+  display: inline-block;
 }

@@ -1,5 +1,22 @@
+/* =========================
+   ИГРОВОЕ ПОЛЕ
+========================= */
+
+.game-grid {
+  display: grid;
+  gap: 10px;
+
+  justify-content: center;
+
+  width: fit-content;
+  max-width: 100%;
+
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
 .attention-area {
-  min-height: 190px;
+  min-height: 200px;
 }
 
 .attention-card {
@@ -25,7 +42,12 @@
 }
 
 .attention-status {
-  min-height: 92px;
+  min-height: 140px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .attention-emoji-row {
@@ -41,11 +63,13 @@
   border: none;
 }
 
-.attention-buttons {
-  display: flex;
-  font-size: 18px;
-  gap: 5px;
-  min-width: 30px;
-  flex-wrap: wrap;
-  justify-content: center;
+/* =========================
+   ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+========================= */
+
+@media (max-width: 580px) {
+  .game-grid {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
 }

@@ -17,7 +17,7 @@ export function QuestionBlock({ question, options, onAnswer }: Props) {
     >
       <h2 className="status-text">{question}</h2>
 
-      <div className="attention-buttons">
+      <div className="buttons-row">
         {options.map((option, index) => (
           <button
             key={index}

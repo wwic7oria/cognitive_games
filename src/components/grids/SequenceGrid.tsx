@@ -20,7 +20,7 @@ export function SequenceGrid({
   return (
     <div
       className="game-grid"
-      style={{ gridTemplateColumns: `repeat(${size}, 80px)` }}
+      style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
     >
       {cells.map(id => {
         const isActive = activeCell === id

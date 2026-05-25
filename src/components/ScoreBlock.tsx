@@ -17,6 +17,7 @@ export function ScoreBlock({ score, popup }: ScoreBlockProps) {
                 : 'score-popup negative'
             }
           >
+            {' '}
             {popup}
           </span>
         )}

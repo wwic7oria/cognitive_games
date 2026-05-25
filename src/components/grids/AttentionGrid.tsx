@@ -17,7 +17,7 @@ export function AttentionGrid({
     <div className="section">
       <div
         className="attention-grid"
-        style={{ gridTemplateColumns: `repeat(${gridCols}, 80px)` }}
+        style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}
       >
         {items.map((item, index) => (
           <div

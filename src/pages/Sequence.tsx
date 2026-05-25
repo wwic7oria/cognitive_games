@@ -124,17 +124,27 @@ export default function Sequence() {
       />
 
       {/* СТАТУС */}
-      <div className="section">
-        {gameState === 'showing' && <h3>Запоминай...</h3>}
-        {gameState === 'input' && <h3>Повтори</h3>}
+      <div className="sequence-status">
+        <div className="status-text">
+          {gameState === 'showing' && <h3>Запоминай...</h3>}
+          {gameState === 'input' && <h3>Повтори</h3>}
+        </div>
+
+        {/* РЕЗУЛЬТАТ */}
+        {result === 'win' && (
+          <h3 className="status-text win-text">Правильно 🎉</h3>
+        )}
+        {result === 'lose' && (
+          <h3 className="status-text error-text">Ошибка ❌</h3>
+        )}
+
+        {/* УПРАВЛЕНИЕ */}
+        <div className="restart-button">
+          {gameState === 'idle' && (
+            <button onClick={startGame}>Начать ▶</button>
+          )}
+        </div>
       </div>
-
-      {/* РЕЗУЛЬТАТ */}
-      {result === 'win' && <h3 className="win-text">Правильно 🎉</h3>}
-      {result === 'lose' && <h3 className="error-text">Ошибка ❌</h3>}
-
-      {/* УПРАВЛЕНИЕ */}
-      {gameState === 'idle' && <button onClick={startGame}>Начать ▶</button>}
 
       {/* ПРАВИЛА */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />

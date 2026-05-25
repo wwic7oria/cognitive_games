@@ -55,16 +55,18 @@ export default function Memory() {
         ]}
       />
 
-      {/* ПОЛЕ */}
-      <MemoryGrid
-        cards={cards}
-        onCardClick={handleClick}
-        size={size}
-        isWin={cards.length > 0 && cards.every(c => c.isMatched)}
-      />
+      <div>
+        {/* ПОЛЕ */}
+        <MemoryGrid
+          cards={cards}
+          onCardClick={handleClick}
+          size={size}
+          isWin={cards.length > 0 && cards.every(c => c.isMatched)}
+        />
+      </div>
 
       {/* ДЕЙСТВИЯ */}
-      <div className="status-text">
+      <div className="status-text memory-status">
         {isWin && <h3 className="status-text win-text">Победа 🏆</h3>}
 
         <div className="restart-button">
@@ -75,9 +77,7 @@ export default function Memory() {
       {/* ПРАВИЛА */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
-      <div className="restart-button">
-        <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
-      </div>
+      <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
     </GameLayout>
   )
 }

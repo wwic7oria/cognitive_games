@@ -138,7 +138,12 @@ export default function Attention() {
 
         {/* НАЧАЛО РАУНДА */}
         {gameState === 'idle' && (
-          <button onClick={startRound}>Начать раунд ▶</button>
+          <button
+            className="restart-button"
+            onClick={startRound}
+          >
+            Начать раунд ▶
+          </button>
         )}
 
         {/* ВОПРОС */}
@@ -154,9 +159,7 @@ export default function Attention() {
       {/* ПРАВИЛА */}
       <RulesBlock rules={rulesByDifficulty[difficulty]} />
 
-      <div className="buttons-row">
-        <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
-      </div>
+      <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
     </GameLayout>
   )
 }

@@ -5,7 +5,14 @@
 .game-grid {
   display: grid;
   gap: 10px;
+
   justify-content: center;
+
+  width: fit-content;
+  max-width: 100%;
+
+  margin: 0 auto;
+  overflow-x: auto;
 }
 
 .emoji-grid {
@@ -70,6 +77,13 @@
    КНОПКА НАЧАТЬ ЗАНОВО
 ========================= */
 .memory-status {
-  min-height: 120px;
+  min-height: 110px;
   margin-top: 20px;
+}
+
+@media (max-width: 580px) {
+  .game-grid {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
 }
