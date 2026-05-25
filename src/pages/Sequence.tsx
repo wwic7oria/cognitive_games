@@ -142,7 +142,7 @@ export default function Sequence() {
         {/* УПРАВЛЕНИЕ */}
         <div className="restart-button">
           {gameState === 'idle' && (
-            <button onClick={startGame}>Начать ▶</button>
+            <button onClick={startGame}>Начать раунд ▶</button>
           )}
         </div>
       </div>
