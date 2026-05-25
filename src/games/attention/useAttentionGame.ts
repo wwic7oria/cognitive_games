@@ -105,16 +105,19 @@ export function useAttentionGame() {
       timeoutRef.current = null
     }
 
-    const newItems = generateItems(SIZE_MAP[difficulty])
-
-    setItems(newItems)
-    setGameState('showing')
     setResult(null)
+    setGameState('showing')
 
     timeoutRef.current = window.setTimeout(() => {
-      buildQuestion(newItems, difficulty)
-      setGameState('question')
-    }, SHOW_TIME[difficulty])
+      const newItems = generateItems(SIZE_MAP[difficulty])
+
+      setItems(newItems)
+
+      timeoutRef.current = window.setTimeout(() => {
+        buildQuestion(newItems, difficulty)
+        setGameState('question')
+      }, SHOW_TIME[difficulty])
+    }, 1000)
   }
 
   const submitAnswer = (value: boolean) => {

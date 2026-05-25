@@ -77,7 +77,11 @@ export function useSequenceGame() {
     setUserInput([])
     setResult(null)
 
-    playSequence(seq)
+    // Задержка перед показом
+    setGameState('showing')
+    timeoutRef.current = window.setTimeout(() => {
+      playSequence(seq)
+    }, 1000)
   }
 
   const handleClick = (id: number) => {
