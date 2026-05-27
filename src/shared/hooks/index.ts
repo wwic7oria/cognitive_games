@@ -1,0 +1,1 @@
+export { useGameResult } from './useGameResult'

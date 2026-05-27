@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import type { Card } from './types'
-import { generateCards } from './utils'
-import { SIZE_MAP } from './constants'
-import { getBonus, getPenalty, isLuckyPair } from './scores'
+import {
+  generateCards,
+  SIZE_MAP,
+  getBonus,
+  getPenalty,
+  isLuckyPair,
+  type Card,
+} from '../engine'
 
 export type Difficulty = keyof typeof SIZE_MAP
 

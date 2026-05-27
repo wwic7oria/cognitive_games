@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
 
-import Home from './pages/Home'
-import Memory from './pages/Memory'
-import Sequence from './pages/Sequence'
-import Attention from './pages/Attention'
-import Stats from './pages/Stats'
+import Home from '@/pages/Home'
+import Memory from '@/games/memory/pages/Memory'
+import Sequence from '@/games/sequence/pages/Sequence'
+import Attention from '@/games/attention/pages/Attention'
+import Stats from '@/pages/Stats'
 
 export default function App() {
   return (

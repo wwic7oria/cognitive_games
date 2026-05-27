@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Difficulty } from './constants'
 import {
   SIZE_MAP,
   SHOW_TIME,
@@ -7,10 +6,13 @@ import {
   COLORS,
   SHAPE_EMOJI,
   COLOR_EMOJI,
-} from './constants'
-import type { AttentionItem, AnswerOption } from './types'
-import { generateItems } from './utils'
-import { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
+  BASE_SCORE_MAP,
+  PENALTY_MAP,
+  generateItems,
+  type Difficulty,
+  type AttentionItem,
+  type AnswerOption,
+} from '../engine'
 
 type GameState = 'idle' | 'showing' | 'question'
 

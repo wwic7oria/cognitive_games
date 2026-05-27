@@ -1,5 +1,3 @@
-export type Difficulty = 'easy' | 'medium' | 'hard'
-
 export const SPEED_MAP = {
   easy: { show: 700, gap: 350 },
   medium: { show: 500, gap: 250 },

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { progressStore } from '../stats/progressStore'
-import type { GameId } from '../stats/progressStore'
+import { progressStore, type GameId } from '@/shared/stats/progressStore'
 
 type Params = {
   game: GameId
@@ -23,22 +22,22 @@ export function useGameResult({
 }: Params) {
   const savedRef = useRef(false)
 
-  // Reset when difficulty changes
+  // Ресет при смене сложности
   useEffect(() => {
     savedRef.current = false
   }, [difficulty])
 
-  // Save result
+  // Сохранение результата
   useEffect(() => {
     if (!shouldSave) return
     if (savedRef.current) return
 
-    // For sequence: check roundCount
+    // Для sequence и attention
     if (roundCount !== undefined && roundCount === 0) return
 
     savedRef.current = true
 
-    // Sequence uses session-based saving
+    // Sequence и attention используют сохранение по сессии
     if (
       roundCount !== undefined &&
       bestScore !== undefined &&
@@ -52,7 +51,7 @@ export function useGameResult({
         difficulty,
       )
     }
-    // Memory and Attention use single-game saving
+    // Для memory
     else if (score !== undefined) {
       progressStore.addScore(game, score, difficulty)
     }

@@ -1,21 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  useSequenceGame,
-  rulesByDifficulty,
-  baseRules,
-  type Difficulty,
-} from '../games/sequence'
+import { rulesByDifficulty, baseRules, type Difficulty } from '../engine'
 import {
   ScoreBlock,
   DifficultySelector,
   RulesBlock,
   GameLayout,
-} from '../components'
-import { SequenceGrid } from '../components/grids'
-import { progressStore } from '../stats/progressStore'
+} from '@/shared/components'
+
+import { useSequenceGame } from '../hooks'
+import { SequenceGrid } from '../components'
+import { progressStore } from '@/shared/stats/progressStore'
 import '../styles/Sequence.css'
-import '../styles/ui.css'
+import '@/shared/styles/ui.css'
 
 export default function Sequence() {
   const {

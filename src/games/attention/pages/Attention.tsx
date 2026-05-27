@@ -1,25 +1,27 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
+
 import {
-  useAttentionGame,
   SIZE_MAP,
   baseRules,
   rulesByDifficulty,
   SHAPE_EMOJI,
   COLOR_EMOJI,
   type Difficulty,
-} from '../games/attention'
+} from '../engine'
+
 import {
   ScoreBlock,
   DifficultySelector,
   RulesBlock,
   GameLayout,
-  QuestionBlock,
-} from '../components'
-import { AttentionGrid } from '../components/grids'
-import { progressStore } from '../stats/progressStore'
+} from '@/shared/components'
+
+import { useAttentionGame } from '../hooks'
+import { AttentionGrid, QuestionBlock } from '../components'
+import { progressStore } from '@/shared/stats/progressStore'
 import '../styles/Attention.css'
-import '../styles/ui.css'
+import '@/shared/styles/ui.css'
 
 export default function Attention() {
   const {

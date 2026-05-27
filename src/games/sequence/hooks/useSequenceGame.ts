@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Difficulty, GameState } from './types'
-import { SIZE_MAP, MAX_LENGTH_MAP } from './constants'
-import { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
-import { generateSequence } from './utils'
-import { SPEED_MAP } from './constants'
+
+import {
+  SPEED_MAP,
+  SIZE_MAP,
+  MAX_LENGTH_MAP,
+  BASE_SCORE_MAP,
+  PENALTY_MAP,
+  generateSequence,
+  type Difficulty,
+  type GameState,
+} from '../engine'
 
 export function useSequenceGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')

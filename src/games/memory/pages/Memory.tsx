@@ -1,21 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import {
-  useMemoryGame,
-  rulesByDifficulty,
-  baseRules,
-  type Difficulty,
-} from '../games/memory'
+
+import { rulesByDifficulty, baseRules, type Difficulty } from '../engine'
+
 import {
   ScoreBlock,
   DifficultySelector,
   RulesBlock,
   GameLayout,
-} from '../components'
-import { MemoryGrid } from '../components/grids'
-import { useGameResult } from '../hooks/useGameResult'
+} from '@/shared/components'
+
+import { useMemoryGame } from '../hooks'
+import { MemoryGrid } from '../components'
+import { useGameResult } from '@/shared/hooks/useGameResult'
 import '../styles/Memory.css'
-import '../styles/ui.css'
+import '@/shared/styles/ui.css'
 
 export default function Memory() {
   const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =

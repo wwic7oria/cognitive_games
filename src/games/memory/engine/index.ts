@@ -1,0 +1,6 @@
+export { baseRules, rulesByDifficulty } from './rules'
+export type { Difficulty } from '../hooks/useMemoryGame'
+export type { Card } from './types'
+export { generateCards } from './utils'
+export { SIZE_MAP } from './constants'
+export { getBonus, getPenalty, isLuckyPair } from './scores'
