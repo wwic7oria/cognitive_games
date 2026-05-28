@@ -25,6 +25,7 @@ export function useMemoryGame() {
   const [scorePopup, setScorePopup] = useState('')
 
   const [result, setResult] = useState<'win' | 'idle'>()
+  const [restartCount, setRestartCount] = useState(0)
 
   const size = SIZE_MAP[difficulty]
 
@@ -41,6 +42,7 @@ export function useMemoryGame() {
     setScorePopup('')
     setDisabled(false)
     setResult('idle')
+    setRestartCount(prev => prev + 1)
   }
 
   // POPUP
@@ -147,5 +149,6 @@ export function useMemoryGame() {
     initGame,
     handleClick,
     result,
+    restartCount,
   }
 }
