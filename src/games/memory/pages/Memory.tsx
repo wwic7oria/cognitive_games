@@ -26,7 +26,11 @@ export default function Memory() {
     initGame,
     handleClick,
     result,
+<<<<<<< HEAD
     sessionKey,
+=======
+    restartCount,
+>>>>>>> 1f08562d1fd39183b7bc6edf37e7a81703780323
   } = useMemoryGame()
 
   const navigate = useNavigate()
@@ -42,7 +46,12 @@ export default function Memory() {
     score,
     difficulty,
     shouldSave: result === 'win',
+<<<<<<< HEAD
     restartKey: sessionKey,
+=======
+    restartKey: restartCount,
+    lastResult: result,
+>>>>>>> 1f08562d1fd39183b7bc6edf37e7a81703780323
   })
 
   return (
