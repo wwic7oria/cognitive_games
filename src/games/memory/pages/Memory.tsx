@@ -43,6 +43,7 @@ export default function Memory() {
     difficulty,
     shouldSave: result === 'win',
     restartKey: restartCount,
+    lastResult: result,
   })
 
   return (
