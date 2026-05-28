@@ -77,7 +77,7 @@ export function useGameResult({
   // =========================
   useEffect(() => {
     sessionIdRef.current = ''
-  }, [difficulty, game])
+  }, [difficulty, game, shouldSave])
 
   return { startSession }
 }
