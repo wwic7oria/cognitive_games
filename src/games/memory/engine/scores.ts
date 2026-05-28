@@ -1,3 +1,4 @@
+// В таком виде удобнее
 export const getBonus = (difficulty: 'easy' | 'medium') =>
   difficulty === 'easy' ? 10 : 15
 

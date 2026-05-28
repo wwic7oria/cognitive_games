@@ -34,7 +34,12 @@ export function useAttentionGame() {
 
   const timeoutRef = useRef<number | null>(null)
 
+  /* =========================
+    РЕСЕТ ИГРЫ
+    Вызывается при смене сложности
+  ========================= */
   const reset = () => {
+    // Убираем таймеры, игровое состояние сбрасывается
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
@@ -52,6 +57,9 @@ export function useAttentionGame() {
     setBestScore(0)
   }
 
+  /* =========================
+    СМЕНА СЛОЖНОСТИ
+  ========================= */
   const changeDifficulty = (diff: Difficulty) => {
     reset()
     setDifficulty(diff)
@@ -62,6 +70,9 @@ export function useAttentionGame() {
     setTimeout(() => setPopup(null), 1000)
   }
 
+  /* =========================
+    ПОСТРОЕНИЕ ВОПРОСОВ
+  ========================= */
   const buildQuestion = (data: AttentionItem[], diff: Difficulty) => {
     const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)]
     const color = COLORS[Math.floor(Math.random() * COLORS.length)]
@@ -101,6 +112,10 @@ export function useAttentionGame() {
     }
   }
 
+  /* =========================
+    СТАРТ РАУНДА 
+    Показываются элементы, через время они скрываются, задается вопрос
+  ========================= */
   const startRound = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -110,11 +125,13 @@ export function useAttentionGame() {
     setResult(null)
     setGameState('showing')
 
+    // Задержка перед показом элементов, чтобы успеть отреагировать
     timeoutRef.current = window.setTimeout(() => {
       const newItems = generateItems(SIZE_MAP[difficulty])
 
       setItems(newItems)
 
+      // Задержка показа через SHOW_TIME
       timeoutRef.current = window.setTimeout(() => {
         buildQuestion(newItems, difficulty)
         setGameState('question')
@@ -122,6 +139,9 @@ export function useAttentionGame() {
     }, 1000)
   }
 
+  /* =========================
+    ОТВЕТ ПОЛЬЗОВАТЕЛЯ НА ВОПРОС
+  ========================= */
   const submitAnswer = (value: boolean) => {
     if (gameState !== 'question') return
 
@@ -149,6 +169,9 @@ export function useAttentionGame() {
     setResult(value ? 'win' : 'lose')
   }
 
+  /* =========================
+    ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
+  ========================= */
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)

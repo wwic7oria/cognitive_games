@@ -18,17 +18,23 @@ export function useMemoryGame() {
 
   const [seenCards, setSeenCards] = useState<number[]>([])
   const [firstCardWasSeen, setFirstCardWasSeen] = useState(false)
-
+  // Запрет кликов во время проверки пары
   const [disabled, setDisabled] = useState(false)
 
   const [score, setScore] = useState(0)
   const [scorePopup, setScorePopup] = useState('')
 
-  const [result, setResult] = useState<'win' | 'idle'>()
+  const [result, setResult] = useState<'win' | 'idle'>('idle')
+  // Ключ сессии
+  // Каждая игра увеличивает, используется для создания новой сессии
+  // Иначе кнопка "Начать заново" перезаписывает старую победу
+  const [sessionKey, setSessionKey] = useState(0)
 
   const size = SIZE_MAP[difficulty]
 
-  // ИНИЦИАЛИЗАЦИЯ ИГРЫ
+  /* =========================
+    ИНИЦИАЛИЗАЦИЯ ИГРЫ
+  ========================= */
   const initGame = (diff: Difficulty) => {
     setDifficulty(diff)
 
@@ -41,6 +47,8 @@ export function useMemoryGame() {
     setScorePopup('')
     setDisabled(false)
     setResult('idle')
+    // Создается новая сессия для нового сохранения в localStorage
+    setSessionKey(prev => prev + 1)
   }
 
   // POPUP
@@ -49,26 +57,38 @@ export function useMemoryGame() {
     setTimeout(() => setScorePopup(''), 1000)
   }
 
-  // CLICK
+  /* =========================
+    ОБРАБОТКА КЛИКА
+  ========================= */
   const handleClick = (card: Card) => {
     if (disabled || card.isFlipped || card.isMatched) return
 
     const wasSeenBefore = seenCards.includes(card.id)
-
+    // Карта открыта впервые -> добавляется в seenCards
     if (!wasSeenBefore) {
       setSeenCards(prev => [...prev, card.id])
     }
-
+    // Карточка открывается на поле (визуально)
     setCards(prev =>
       prev.map(c => (c.id === card.id ? { ...c, isFlipped: true } : c)),
     )
 
+    /* =========================
+      ВЫБОР ПЕРВОЙ КАРТОЧКИ ПАРЫ. Запоминается:
+      1. первая карта пары
+      2. видели ли карту ранее
+      После этого ожидается второй клик
+    ========================= */
     if (!firstCard) {
       setFirstCard(card)
       setFirstCardWasSeen(wasSeenBefore)
       return
     }
-
+    /* =========================
+      ВЫБОР ВТОРОЙ КАРТОЧКИ ПАРЫ. 
+      Если firstCard уже есть, игрок выбирает вторую карту:
+      Пара сформирована, клики временно блокируются + таймер 600 мс перед проверкой пары
+    ========================= */
     setDisabled(true)
 
     setTimeout(() => {
@@ -76,7 +96,9 @@ export function useMemoryGame() {
     }, 600)
   }
 
-  // ПРОВЕРКА ПАРЫ
+  /* =========================
+    ПРОВЕРКА ПАРЫ
+  ========================= */
   const checkMatch = (
     c1: Card,
     c2: Card,
@@ -86,11 +108,15 @@ export function useMemoryGame() {
     const isMatch = c1.value === c2.value
 
     let scoreDelta = 0
+    // Копия текущих карт, сюда вносятся изменения
+    let updatedCards = [...cards]
 
-    let updatedCards = [...cards] // 👈 ВАЖНО: берём текущие карты
-
+    /* =========================
+      КАРТОЧКИ СОВПАЛИ
+    ========================= */
     if (isMatch) {
       const bonus = getBonus(difficulty)
+      // Если обе карточки открыты впервые, дается бонус +5 очков
       const isLucky = isLuckyPair(c1WasSeen, c2WasSeen)
 
       const totalBonus = isLucky ? bonus + 5 : bonus
@@ -98,18 +124,22 @@ export function useMemoryGame() {
       scoreDelta = totalBonus
 
       showScorePopup(isLucky ? `+${bonus}+5` : `+${bonus}`)
-
+      // Пара отмечается как найденная
       updatedCards = updatedCards.map(c =>
         c.value === c1.value ? { ...c, isMatched: true } : c,
       )
+
+      /* =========================
+      КАРТОЧКИ НЕ СОВПАЛИ
+    ========================= */
     } else {
       const penalty = getPenalty(c1WasSeen, c2WasSeen)
-
+      // Штраф, если одну из карт уже видели
       if (penalty > 0) {
         scoreDelta = -penalty
         showScorePopup(`-${penalty}`)
       }
-
+      // Карты переворачиваются
       updatedCards = updatedCards.map(c =>
         c.id === c1.id || c.id === c2.id ? { ...c, isFlipped: false } : c,
       )
@@ -147,5 +177,6 @@ export function useMemoryGame() {
     initGame,
     handleClick,
     result,
+    sessionKey,
   }
 }

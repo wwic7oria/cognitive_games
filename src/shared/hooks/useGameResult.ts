@@ -5,6 +5,8 @@ type Params = {
   game: GameId
   difficulty: string
   shouldSave: boolean
+  // restartKey относится только к memory
+  restartKey?: string | number
 
   score?: number
   roundCount?: number
@@ -16,22 +18,23 @@ export function useGameResult({
   score,
   difficulty,
   shouldSave,
+  restartKey,
   roundCount,
   bestScore,
 }: Params) {
-  // 💥 sessionId ВСЕГДА string (никаких null)
+  // Хранится в ref, чтобы не вызывать ререндер + сохранять значения между useEffect
   const sessionIdRef = useRef<string>('')
 
-  // =========================
-  // START NEW SESSION
-  // =========================
+  /* =========================
+    СОЗДАНИЕ НОВОЙ СЕССИИ через уникальный идентификатор
+  ========================= */
   const startSession = () => {
-    sessionIdRef.current = `${game}-${Date.now()}-${Math.random()}`
+    sessionIdRef.current = `${game}-${Date.now()}`
   }
 
-  // =========================
-  // AUTO INIT SESSION (first save only)
-  // =========================
+  /* =========================
+    ОСНОВНОЙ EFFECT, срабатывает при изменениях
+  ========================= */
   useEffect(() => {
     if (!shouldSave) return
 
@@ -41,9 +44,9 @@ export function useGameResult({
 
     const sessionId = sessionIdRef.current
 
-    // =========================
-    // MEMORY GAME
-    // =========================
+    /* =========================
+      MEMORY, сохраняется только score
+    ========================= */
     if (game === 'memory') {
       if (score === undefined) return
 
@@ -57,9 +60,10 @@ export function useGameResult({
       return
     }
 
-    // =========================
-    // SEQUENCE / ATTENTION
-    // =========================
+    /* =========================
+      SEQUENCE + ATTENTION, сохраняется расширенная статистика
+      В одной сессии может быть много раундов, сессия = раунды подряд до смены сложности/выхода на глав. страницу
+    ========================= */
     if (roundCount === undefined || bestScore === undefined) return
 
     progressStore.saveSession(game, {
@@ -72,12 +76,13 @@ export function useGameResult({
     })
   }, [shouldSave, score, roundCount, bestScore, difficulty, game])
 
-  // =========================
-  // MANUAL SESSION CONTROL
-  // =========================
+  /* =========================
+    СБРОС СЕССИИ
+    sessionId обнуляется для создания новой сессии следующей игрой
+  ========================= */
   useEffect(() => {
     sessionIdRef.current = ''
-  }, [difficulty, game])
+  }, [difficulty, game, restartKey])
 
   return { startSession }
 }

@@ -29,7 +29,6 @@ export function useSequenceGame() {
   const [gameState, setGameState] = useState<GameState>('idle')
   const [result, setResult] = useState<null | 'win' | 'lose'>(null)
 
-  // SESSION STATS
   const [roundCount, setRoundCount] = useState(0)
   const [bestScore, setBestScore] = useState(0)
 
@@ -42,6 +41,7 @@ export function useSequenceGame() {
 
   const speed = SPEED_MAP[difficulty]
 
+  // Массив клеток для рендера
   const cells = Array.from({ length: size * size }, (_, i) => i)
 
   const showPopup = (text: string) => {
@@ -49,23 +49,29 @@ export function useSequenceGame() {
     setTimeout(() => setScorePopup(''), 1000)
   }
 
+  /* =========================
+    ПОКАЗ ПОСЛЕДОВАТЕЛЬНОСТИ
+========================= */
   const playSequence = (seq: number[]) => {
+    // Блок ввода
     setGameState('showing')
 
     let i = 0
 
     const playNext = () => {
+      // Последовательность закончилась
       if (i >= seq.length) {
         setActiveCell(null)
         setGameState('input')
         return
       }
 
+      // Подсветка клетки
       setActiveCell(seq[i])
 
       timeoutRef.current = window.setTimeout(() => {
         setActiveCell(null)
-
+        // Пауза между подсветкой
         timeoutRef.current = window.setTimeout(() => {
           i++
           playNext()
@@ -76,7 +82,15 @@ export function useSequenceGame() {
     playNext()
   }
 
+  /* =========================
+    СТАРТ РАУНДА
+  ========================= */
   const startGame = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
     const seq = generateSequence(currentLength, size)
 
     setSequence(seq)
@@ -90,9 +104,13 @@ export function useSequenceGame() {
     }, 1000)
   }
 
+  /* =========================
+    ОБРАБОТКА КЛИКА
+  ========================= */
   const handleClick = (id: number) => {
+    // Клики только во время ввода (input)
     if (gameState !== 'input') return
-
+    // Добавляется клик
     const newInput = [...userInput, id]
     setUserInput(newInput)
 
@@ -101,6 +119,9 @@ export function useSequenceGame() {
 
     // lastClicked до проверки не трогается
 
+    /* =========================
+      НЕПРАВИЛЬНО
+    ========================= */
     if (!isCorrect) {
       setWrongClick(id)
       setTimeout(() => setWrongClick(null), 300)
@@ -117,9 +138,16 @@ export function useSequenceGame() {
       return
     }
 
+    /* =========================
+      ПРАВИЛЬНО
+    ========================= */
+
     setLastClicked(id)
     setTimeout(() => setLastClicked(null), 200)
 
+    /* =========================
+      ПОСЛЕДОВАТЕЛЬНОСТЬ ПОВТОРЕНА ПРАВИЛЬНО
+    ========================= */
     if (newInput.length === sequence.length) {
       const newScore = score + baseScore
       setScore(newScore)
@@ -131,13 +159,23 @@ export function useSequenceGame() {
       setResult('win')
       setGameState('idle')
 
+      // Длина последовательности увеличивается
       if (currentLength < maxLength) {
         setCurrentLength(prev => prev + 1)
       }
     }
   }
 
-  useEffect(() => {
+  /* =========================
+    РЕСЕТ ИГРЫ
+    Вызывается при смене сложности
+  ========================= */
+  const reset = () => {
+    // Убираем таймеры, игровое состояние сбрасывается
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
     setGameState('idle')
     setSequence([])
     setUserInput([])
@@ -146,8 +184,19 @@ export function useSequenceGame() {
     setCurrentLength(3)
     setRoundCount(0)
     setBestScore(0)
-  }, [difficulty])
+  }
 
+  /* =========================
+    СБРОС ПРИ СМЕНЕ СЛОЖНОСТИ
+  ========================= */
+  const changeDifficulty = (diff: Difficulty) => {
+    reset()
+    setDifficulty(diff)
+  }
+
+  /* =========================
+    ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
+  ========================= */
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
@@ -156,7 +205,7 @@ export function useSequenceGame() {
 
   return {
     difficulty,
-    setDifficulty,
+    changeDifficulty,
     score,
     scorePopup,
     size,

@@ -16,7 +16,7 @@ import '@/shared/styles/ui.css'
 
 export default function Sequence() {
   const {
-    setDifficulty,
+    changeDifficulty,
     difficulty,
     score,
     scorePopup,
@@ -39,12 +39,12 @@ export default function Sequence() {
 
   // Инициализация сложности при загрузке страницы
   useEffect(() => {
-    setDifficulty('easy')
+    changeDifficulty('easy')
   }, [])
 
   // Смена сложности
   const handleDifficultyChange = (value: Difficulty) => {
-    setDifficulty(value)
+    changeDifficulty(value)
   }
 
   // Сохранение результатов

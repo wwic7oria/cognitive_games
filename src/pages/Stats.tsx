@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
 import { progressStore } from '@/shared/stats/progressStore'
 import '@/shared/styles/Stats.css'
 
@@ -21,6 +20,17 @@ export default function Stats() {
       // Для memory (single-game based)
       return sum + 1
     }, 0)
+  }
+
+  // RESET статистики
+  const handleReset = () => {
+    const confirmed = window.confirm(
+      'Вы уверены, что хотите удалить всю статистику?',
+    )
+    if (!confirmed) return
+    progressStore.reset()
+    // Перезагрузка страницы
+    window.location.reload()
   }
 
   const getTotalScore = (arr: typeof memoryResults) => {
@@ -92,8 +102,13 @@ export default function Stats() {
           <p>Средний результат: {getAvgScore(attentionResults)}</p>
         </div>
 
-        {/* НАЗАД */}
+        {/* RESET */}
         <div style={{ marginTop: 40 }}>
+          <button onClick={handleReset}>Сбросить всю статистику</button>
+        </div>
+
+        {/* НАЗАД */}
+        <div style={{ marginTop: 20 }}>
           <button onClick={() => navigate('/')}>🏠 Вернуться на главную</button>
         </div>
       </div>

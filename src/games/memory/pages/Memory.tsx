@@ -26,6 +26,7 @@ export default function Memory() {
     initGame,
     handleClick,
     result,
+    sessionKey,
   } = useMemoryGame()
 
   const navigate = useNavigate()
@@ -41,6 +42,7 @@ export default function Memory() {
     score,
     difficulty,
     shouldSave: result === 'win',
+    restartKey: sessionKey,
   })
 
   return (
