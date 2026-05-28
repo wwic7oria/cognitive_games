@@ -24,16 +24,11 @@ export function useMemoryGame() {
   const [score, setScore] = useState(0)
   const [scorePopup, setScorePopup] = useState('')
 
-<<<<<<< HEAD
   const [result, setResult] = useState<'win' | 'idle'>('idle')
   // Ключ сессии
   // Каждая игра увеличивает, используется для создания новой сессии
   // Иначе кнопка "Начать заново" перезаписывает старую победу
   const [sessionKey, setSessionKey] = useState(0)
-=======
-  const [result, setResult] = useState<'win' | 'idle'>()
-  const [restartCount, setRestartCount] = useState(0)
->>>>>>> 1f08562d1fd39183b7bc6edf37e7a81703780323
 
   const size = SIZE_MAP[difficulty]
 
@@ -52,12 +47,7 @@ export function useMemoryGame() {
     setScorePopup('')
     setDisabled(false)
     setResult('idle')
-<<<<<<< HEAD
-    // Создается новая сессия для нового сохранения в localStorage
     setSessionKey(prev => prev + 1)
-=======
-    setRestartCount(prev => prev + 1)
->>>>>>> 1f08562d1fd39183b7bc6edf37e7a81703780323
   }
 
   // POPUP
@@ -186,10 +176,6 @@ export function useMemoryGame() {
     initGame,
     handleClick,
     result,
-<<<<<<< HEAD
     sessionKey,
-=======
-    restartCount,
->>>>>>> 1f08562d1fd39183b7bc6edf37e7a81703780323
   }
 }
