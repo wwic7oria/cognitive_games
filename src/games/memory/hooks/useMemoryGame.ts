@@ -24,6 +24,8 @@ export function useMemoryGame() {
   const [score, setScore] = useState(0)
   const [scorePopup, setScorePopup] = useState('')
 
+  const [result, setResult] = useState<'win' | 'idle'>()
+
   const size = SIZE_MAP[difficulty]
 
   // ИНИЦИАЛИЗАЦИЯ ИГРЫ
@@ -38,6 +40,7 @@ export function useMemoryGame() {
     setScore(0)
     setScorePopup('')
     setDisabled(false)
+    setResult('idle')
   }
 
   // POPUP
@@ -84,6 +87,8 @@ export function useMemoryGame() {
 
     let scoreDelta = 0
 
+    let updatedCards = [...cards] // 👈 ВАЖНО: берём текущие карты
+
     if (isMatch) {
       const bonus = getBonus(difficulty)
       const isLucky = isLuckyPair(c1WasSeen, c2WasSeen)
@@ -93,6 +98,10 @@ export function useMemoryGame() {
       scoreDelta = totalBonus
 
       showScorePopup(isLucky ? `+${bonus}+5` : `+${bonus}`)
+
+      updatedCards = updatedCards.map(c =>
+        c.value === c1.value ? { ...c, isMatched: true } : c,
+      )
     } else {
       const penalty = getPenalty(c1WasSeen, c2WasSeen)
 
@@ -100,28 +109,27 @@ export function useMemoryGame() {
         scoreDelta = -penalty
         showScorePopup(`-${penalty}`)
       }
+
+      updatedCards = updatedCards.map(c =>
+        c.id === c1.id || c.id === c2.id ? { ...c, isFlipped: false } : c,
+      )
+
+      setResult('idle')
     }
 
-    // обновление карточек
-    setCards(prev => {
-      let updated = [...prev]
+    // обновляем карты ОДИН РАЗ
+    setCards(updatedCards)
 
-      if (isMatch) {
-        updated = updated.map(c =>
-          c.value === c1.value ? { ...c, isMatched: true } : c,
-        )
-      } else {
-        updated = updated.map(c =>
-          c.id === c1.id || c.id === c2.id ? { ...c, isFlipped: false } : c,
-        )
-      }
-
-      return updated
-    })
-
-    // обновление счета
+    // score
     if (scoreDelta !== 0) {
       setScore(prev => prev + scoreDelta)
+    }
+
+    // WIN CHECK
+    const isWinNow = updatedCards.every(c => c.isMatched)
+
+    if (isWinNow) {
+      setResult('win')
     }
 
     setFirstCard(null)
@@ -138,5 +146,6 @@ export function useMemoryGame() {
     size,
     initGame,
     handleClick,
+    result,
   }
 }

@@ -17,8 +17,16 @@ import '../styles/Memory.css'
 import '@/shared/styles/ui.css'
 
 export default function Memory() {
-  const { difficulty, cards, score, scorePopup, size, initGame, handleClick } =
-    useMemoryGame()
+  const {
+    difficulty,
+    cards,
+    score,
+    scorePopup,
+    size,
+    initGame,
+    handleClick,
+    result,
+  } = useMemoryGame()
 
   const navigate = useNavigate()
 
@@ -27,14 +35,12 @@ export default function Memory() {
     initGame('easy')
   }, [])
 
-  const isWin = cards.length > 0 && cards.every(c => c.isMatched)
-
   // СОХРАНЕНИЕ РЕЗУЛЬТАТА
   useGameResult({
     game: 'memory',
     score,
     difficulty,
-    shouldSave: isWin,
+    shouldSave: result === 'win',
   })
 
   return (
@@ -61,13 +67,15 @@ export default function Memory() {
           cards={cards}
           onCardClick={handleClick}
           size={size}
-          isWin={cards.length > 0 && cards.every(c => c.isMatched)}
+          isWin={result === 'win'}
         />
       </div>
 
       {/* ДЕЙСТВИЯ */}
       <div className="status-text memory-status">
-        {isWin && <h3 className="status-text win-text">Победа 🏆</h3>}
+        {result === 'win' && (
+          <h3 className="status-text win-text">Победа 🏆</h3>
+        )}
 
         <div className="restart-button">
           <button onClick={() => initGame(difficulty)}>🔄 Начать заново</button>

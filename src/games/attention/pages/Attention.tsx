@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 import {
   SIZE_MAP,
@@ -19,7 +19,7 @@ import {
 
 import { useAttentionGame } from '../hooks'
 import { AttentionGrid, QuestionBlock } from '../components'
-import { progressStore } from '@/shared/stats/progressStore'
+import { useGameResult } from '@/shared/hooks'
 import '../styles/Attention.css'
 import '@/shared/styles/ui.css'
 
@@ -45,52 +45,25 @@ export default function Attention() {
   const size = SIZE_MAP[difficulty]
   const gridCols = Math.ceil(Math.sqrt(size))
 
-  // Ref для хранения текущей игровой сессии
-  const sessionRef = useRef({
-    roundCount: 0,
-    bestScore: 0,
-    score: 0,
-    difficulty: 'easy' as Difficulty,
-  })
-
-  // Обновление ref
+  // Инициализация сложности при загрузке страницы
   useEffect(() => {
-    sessionRef.current = {
-      roundCount,
-      bestScore,
-      score,
-      difficulty,
-    }
-  }, [roundCount, bestScore, score, difficulty])
+    changeDifficulty('easy')
+  }, [])
 
-  // Сохранение результатов при смене сложности
+  // Смена сложности
   const handleDifficultyChange = (value: Difficulty) => {
-    if (sessionRef.current.roundCount > 0) {
-      progressStore.addSessionResult(
-        'attention',
-        sessionRef.current.roundCount,
-        sessionRef.current.bestScore,
-        sessionRef.current.score,
-        sessionRef.current.difficulty,
-      )
-    }
     changeDifficulty(value)
   }
 
-  // Сохранение результатов при уходе со страницы
-  useEffect(() => {
-    return () => {
-      if (sessionRef.current.roundCount > 0) {
-        progressStore.addSessionResult(
-          'attention',
-          sessionRef.current.roundCount,
-          sessionRef.current.bestScore,
-          sessionRef.current.score,
-          sessionRef.current.difficulty,
-        )
-      }
-    }
-  }, [])
+  // Сохранение результатов
+  useGameResult({
+    game: 'attention',
+    shouldSave: result === 'win' || result === 'lose',
+    difficulty,
+    roundCount,
+    bestScore,
+    score,
+  })
 
   return (
     <GameLayout title="Запомни элементы">

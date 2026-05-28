@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { rulesByDifficulty, baseRules, type Difficulty } from '../engine'
 import {
@@ -10,7 +10,7 @@ import {
 
 import { useSequenceGame } from '../hooks'
 import { SequenceGrid } from '../components'
-import { progressStore } from '@/shared/stats/progressStore'
+import { useGameResult } from '@/shared/hooks'
 import '../styles/Sequence.css'
 import '@/shared/styles/ui.css'
 
@@ -37,52 +37,25 @@ export default function Sequence() {
 
   const navigate = useNavigate()
 
-  // Ref для хранения текущей игровой сессии
-  const sessionRef = useRef({
-    roundCount: 0,
-    bestScore: 0,
-    score: 0,
-    difficulty: 'easy',
-  })
-
-  // Обновление ref
-  useEffect(() => {
-    sessionRef.current = { roundCount, bestScore, score, difficulty }
-  }, [roundCount, bestScore, score, difficulty])
-
   // Инициализация сложности при загрузке страницы
   useEffect(() => {
     setDifficulty('easy')
   }, [])
 
-  // Сохранение результатов при смене сложности
+  // Смена сложности
   const handleDifficultyChange = (value: Difficulty) => {
-    if (sessionRef.current.roundCount > 0) {
-      progressStore.addSessionResult(
-        'sequence',
-        sessionRef.current.roundCount,
-        sessionRef.current.bestScore,
-        sessionRef.current.score,
-        sessionRef.current.difficulty,
-      )
-    }
     setDifficulty(value)
   }
 
-  // Сохранение результатов при уходе со страницы
-  useEffect(() => {
-    return () => {
-      if (sessionRef.current.roundCount > 0) {
-        progressStore.addSessionResult(
-          'sequence',
-          sessionRef.current.roundCount,
-          sessionRef.current.bestScore,
-          sessionRef.current.score,
-          sessionRef.current.difficulty,
-        )
-      }
-    }
-  }, [])
+  // Сохранение результатов
+  useGameResult({
+    game: 'sequence',
+    shouldSave: result === 'win' || result === 'lose',
+    difficulty,
+    roundCount,
+    bestScore,
+    score,
+  })
 
   return (
     <GameLayout title="Повтор последовательности">

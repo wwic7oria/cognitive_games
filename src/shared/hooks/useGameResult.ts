@@ -3,12 +3,12 @@ import { progressStore, type GameId } from '@/shared/stats/progressStore'
 
 type Params = {
   game: GameId
-  score?: number
   difficulty: string
   shouldSave: boolean
+
+  score?: number
   roundCount?: number
   bestScore?: number
-  totalScore?: number
 }
 
 export function useGameResult({
@@ -18,42 +18,66 @@ export function useGameResult({
   shouldSave,
   roundCount,
   bestScore,
-  totalScore,
 }: Params) {
-  const savedRef = useRef(false)
+  // 💥 sessionId ВСЕГДА string (никаких null)
+  const sessionIdRef = useRef<string>('')
 
-  // Ресет при смене сложности
-  useEffect(() => {
-    savedRef.current = false
-  }, [difficulty])
+  // =========================
+  // START NEW SESSION
+  // =========================
+  const startSession = () => {
+    sessionIdRef.current = `${game}-${Date.now()}-${Math.random()}`
+  }
 
-  // Сохранение результата
+  // =========================
+  // AUTO INIT SESSION (first save only)
+  // =========================
   useEffect(() => {
     if (!shouldSave) return
-    if (savedRef.current) return
 
-    // Для sequence и attention
-    if (roundCount !== undefined && roundCount === 0) return
+    if (!sessionIdRef.current) {
+      startSession()
+    }
 
-    savedRef.current = true
+    const sessionId = sessionIdRef.current
 
-    // Sequence и attention используют сохранение по сессии
-    if (
-      roundCount !== undefined &&
-      bestScore !== undefined &&
-      totalScore !== undefined
-    ) {
-      progressStore.addSessionResult(
-        game,
-        roundCount,
-        bestScore,
-        totalScore,
+    // =========================
+    // MEMORY GAME
+    // =========================
+    if (game === 'memory') {
+      if (score === undefined) return
+
+      progressStore.saveSession(game, {
+        sessionId,
+        score,
         difficulty,
-      )
+        playedAt: Date.now(),
+      })
+
+      return
     }
-    // Для memory
-    else if (score !== undefined) {
-      progressStore.addScore(game, score, difficulty)
-    }
-  }, [shouldSave, score, roundCount, bestScore, totalScore, difficulty, game])
+
+    // =========================
+    // SEQUENCE / ATTENTION
+    // =========================
+    if (roundCount === undefined || bestScore === undefined) return
+
+    progressStore.saveSession(game, {
+      sessionId,
+      roundCount,
+      bestScore,
+      totalScore: score ?? 0,
+      difficulty,
+      playedAt: Date.now(),
+    })
+  }, [shouldSave, score, roundCount, bestScore, difficulty, game])
+
+  // =========================
+  // MANUAL SESSION CONTROL
+  // =========================
+  useEffect(() => {
+    sessionIdRef.current = ''
+  }, [difficulty, game])
+
+  return { startSession }
 }

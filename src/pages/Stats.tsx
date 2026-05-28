@@ -1,15 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { progressStore } from '@/shared/stats/progressStore'
-import '@/styles/Stats.css'
+import '@/shared/styles/Stats.css'
 
 export default function Stats() {
   const navigate = useNavigate()
-
-  // Миграция старых данных при загрузке страницы
-  useEffect(() => {
-    progressStore.migrateOldData()
-  }, [])
 
   const data = progressStore.getAll()
 
