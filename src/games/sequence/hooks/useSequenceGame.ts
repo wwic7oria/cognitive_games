@@ -7,6 +7,7 @@ import {
   BASE_SCORE_MAP,
   PENALTY_MAP,
   generateSequence,
+  checkClick,
   type Difficulty,
   type GameState,
 } from '../engine'
@@ -32,16 +33,12 @@ export function useSequenceGame() {
   const [roundCount, setRoundCount] = useState(0)
   const [bestScore, setBestScore] = useState(0)
 
-  const timeoutRef = useRef<number | null>(null)
-
   const size = SIZE_MAP[difficulty]
   const maxLength = MAX_LENGTH_MAP[difficulty]
   const baseScore = BASE_SCORE_MAP[difficulty]
   const penalty = PENALTY_MAP[difficulty]
-
   const speed = SPEED_MAP[difficulty]
 
-  // Массив клеток для рендера
   const cells = Array.from({ length: size * size }, (_, i) => i)
 
   const showPopup = (text: string) => {
@@ -49,47 +46,59 @@ export function useSequenceGame() {
     setTimeout(() => setScorePopup(''), 1000)
   }
 
+  // ID всех таймеров
+  const timersRef = useRef<number[]>([])
+
+  // Сохраняет id таймеров
+  const addTimer = (t: number) => {
+    timersRef.current.push(t)
+  }
+
+  // Очистка таймеров
+  const clearAllTimers = () => {
+    timersRef.current.forEach(clearTimeout)
+    timersRef.current = []
+  }
+
   /* =========================
     ПОКАЗ ПОСЛЕДОВАТЕЛЬНОСТИ
-========================= */
-  const playSequence = (seq: number[]) => {
-    // Блок ввода
+  ========================= */
+  const playSequenceHandler = (seq: number[]) => {
     setGameState('showing')
 
     let i = 0
 
-    const playNext = () => {
-      // Последовательность закончилась
+    const next = () => {
       if (i >= seq.length) {
         setActiveCell(null)
         setGameState('input')
         return
       }
 
-      // Подсветка клетки
       setActiveCell(seq[i])
 
-      timeoutRef.current = window.setTimeout(() => {
-        setActiveCell(null)
-        // Пауза между подсветкой
-        timeoutRef.current = window.setTimeout(() => {
-          i++
-          playNext()
-        }, speed.gap)
-      }, speed.show)
+      addTimer(
+        window.setTimeout(() => {
+          setActiveCell(null)
+
+          addTimer(
+            window.setTimeout(() => {
+              i++
+              next()
+            }, speed.gap),
+          )
+        }, speed.show),
+      )
     }
 
-    playNext()
+    next()
   }
 
   /* =========================
     СТАРТ РАУНДА
   ========================= */
   const startGame = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = null
-    }
+    clearAllTimers()
 
     const seq = generateSequence(currentLength, size)
 
@@ -97,85 +106,51 @@ export function useSequenceGame() {
     setUserInput([])
     setResult(null)
 
-    // Задержка перед показом
     setGameState('showing')
-    timeoutRef.current = window.setTimeout(() => {
-      playSequence(seq)
-    }, 1000)
+
+    addTimer(
+      window.setTimeout(() => {
+        playSequenceHandler(seq)
+      }, 1000),
+    )
   }
 
   /* =========================
     ОБРАБОТКА КЛИКА
   ========================= */
   const handleClick = (id: number) => {
-    // Клики только во время ввода (input)
-    if (gameState !== 'input') return
-    // Добавляется клик
-    const newInput = [...userInput, id]
-    setUserInput(newInput)
+    checkClick({
+      id,
+      sequence,
+      userInput,
+      gameState,
 
-    const index = newInput.length - 1
-    const isCorrect = newInput[index] === sequence[index]
+      score,
+      baseScore,
+      penalty,
+      currentLength,
+      maxLength,
 
-    // lastClicked до проверки не трогается
+      setUserInput,
+      setScore,
+      setBestScore,
+      setRoundCount,
+      setResult,
+      setGameState,
 
-    /* =========================
-      НЕПРАВИЛЬНО
-    ========================= */
-    if (!isCorrect) {
-      setWrongClick(id)
-      setTimeout(() => setWrongClick(null), 300)
-
-      const newScore = score - penalty
-      setScore(newScore)
-      showPopup(`-${penalty}`)
-
-      setRoundCount(prev => prev + 1)
-
-      setGameState('idle')
-      setUserInput([])
-      setResult('lose')
-      return
-    }
-
-    /* =========================
-      ПРАВИЛЬНО
-    ========================= */
-
-    setLastClicked(id)
-    setTimeout(() => setLastClicked(null), 200)
-
-    /* =========================
-      ПОСЛЕДОВАТЕЛЬНОСТЬ ПОВТОРЕНА ПРАВИЛЬНО
-    ========================= */
-    if (newInput.length === sequence.length) {
-      const newScore = score + baseScore
-      setScore(newScore)
-      showPopup(`+${baseScore}`)
-
-      setBestScore(prev => Math.max(prev, newScore))
-      setRoundCount(prev => prev + 1)
-
-      setResult('win')
-      setGameState('idle')
-
-      // Длина последовательности увеличивается
-      if (currentLength < maxLength) {
-        setCurrentLength(prev => prev + 1)
-      }
-    }
+      showPopup,
+      setLastClicked,
+      setWrongClick,
+      setCurrentLength,
+    })
   }
 
   /* =========================
-    РЕСЕТ ИГРЫ
-    Вызывается при смене сложности
+    РЕСЕТ
   ========================= */
   const reset = () => {
-    // Убираем таймеры, игровое состояние сбрасывается
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = null
-    }
+    clearAllTimers()
+
     setGameState('idle')
     setSequence([])
     setUserInput([])
@@ -184,23 +159,16 @@ export function useSequenceGame() {
     setCurrentLength(3)
     setRoundCount(0)
     setBestScore(0)
+    setActiveCell(null)
   }
 
-  /* =========================
-    СБРОС ПРИ СМЕНЕ СЛОЖНОСТИ
-  ========================= */
   const changeDifficulty = (diff: Difficulty) => {
     reset()
     setDifficulty(diff)
   }
 
-  /* =========================
-    ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
-  ========================= */
   useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    }
+    return () => clearAllTimers()
   }, [])
 
   return {

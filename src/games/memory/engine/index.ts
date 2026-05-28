@@ -1,6 +1,15 @@
-export { baseRules, rulesByDifficulty } from './rules'
-export type { Difficulty } from '../hooks/useMemoryGame'
 export type { Card } from './types'
 export { generateCards } from './utils'
-export { SIZE_MAP } from './constants'
-export { getBonus, getPenalty, isLuckyPair } from './scores'
+export {
+  SIZE_MAP,
+  baseRules,
+  rulesByDifficulty,
+  getBonus,
+  getPenalty,
+  isLuckyPair,
+} from './constants'
+
+import { SIZE_MAP } from './constants'
+export type Difficulty = keyof typeof SIZE_MAP
+export { checkMatch } from './checkMatch'
+export { handleClick } from './handleClick'

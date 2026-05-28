@@ -58,3 +58,62 @@ export const COLOR_EMOJI: Record<Color, string> = {
   purple: '🟣',
   black: '⚫',
 }
+
+export const baseRules = [
+  {
+    text: 'На экране будут появляться эмодзи. Запомните их и ответьте на вопрос.',
+  },
+] as const
+
+export const rulesByDifficulty = {
+  easy: [
+    {
+      value: '+10',
+      color: 'rule-positive',
+      text: 'очков за правильный ответ',
+    },
+    {
+      value: '-5',
+      color: 'rule-negative',
+      text: 'за ошибку',
+    },
+  ],
+
+  medium: [
+    {
+      value: '+15',
+      color: 'rule-positive',
+      text: 'очков за правильный ответ',
+    },
+    {
+      value: '-8',
+      color: 'rule-negative',
+      text: 'за ошибку',
+    },
+  ],
+
+  hard: [
+    {
+      value: '+20',
+      color: 'rule-positive',
+      text: 'очков за правильный ответ',
+    },
+    {
+      value: '-10',
+      color: 'rule-negative',
+      text: 'за ошибку',
+    },
+  ],
+} as const
+
+export const BASE_SCORE_MAP = {
+  easy: 10,
+  medium: 15,
+  hard: 20,
+} as const
+
+export const PENALTY_MAP = {
+  easy: 5,
+  medium: 8,
+  hard: 10,
+} as const

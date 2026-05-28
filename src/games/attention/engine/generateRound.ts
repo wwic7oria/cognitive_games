@@ -1,5 +1,5 @@
-import type { Item } from './types'
-import { SHAPES, COLORS } from './constants'
+import type { AttentionItem, AnswerOption, Difficulty } from './'
+import { SHAPES, COLORS, SHAPE_EMOJI, COLOR_EMOJI } from './constants'
 
 function randomShape() {
   return SHAPES[Math.floor(Math.random() * SHAPES.length)]
@@ -9,31 +9,44 @@ function randomColor() {
   return COLORS[Math.floor(Math.random() * COLORS.length)]
 }
 
-// EASY - "сколько было цветов?"
-export function generateEasy(items: Item[]) {
+/* =========================
+  ПОСТРОЕНИЕ ВОПРОСОВ
+========================= */
+export function generateRound(items: AttentionItem[], diff: Difficulty) {
+  const shape = randomShape()
   const color = randomColor()
-  return {
-    question: `Сколько ${color}?`,
-    correctAnswer: items.filter(i => i.color === color).length,
+
+  if (diff === 'easy') {
+    const count = items.filter(i => i.color === color).length
+
+    return {
+      question: `Сколько ${COLOR_EMOJI[color]}?`,
+      options: [0, 1, 2, 3].map(n => ({
+        label: String(n),
+        value: n === count,
+      })) satisfies AnswerOption[],
+    }
   }
-}
 
-// MEDIUM - "была ли звездочка?"
-export function generateMedium(items: Item[]) {
-  const shape = randomShape()
+  if (diff === 'medium') {
+    const count = items.filter(i => i.shape === shape).length
 
-  return {
-    question: `Был ли ${shape}?`,
-    correctAnswer: items.some(i => i.shape === shape),
+    return {
+      question: `Был ли ${SHAPE_EMOJI[shape]}?`,
+      options: [
+        { label: 'Да', value: count > 0 },
+        { label: 'Нет', value: count === 0 },
+      ] satisfies AnswerOption[],
+    }
   }
-}
 
-// HARD - "сколько звездочек?"
-export function generateHard(items: Item[]) {
-  const shape = randomShape()
+  const count = items.filter(i => i.shape === shape).length
 
   return {
-    question: `Сколько ${shape}?`,
-    correctAnswer: items.filter(i => i.shape === shape).length,
+    question: `Сколько ${SHAPE_EMOJI[shape]}?`,
+    options: [0, 1, 2, 3].map(n => ({
+      label: String(n),
+      value: n === count,
+    })) satisfies AnswerOption[],
   }
 }

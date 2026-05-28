@@ -1,8 +1,16 @@
-export { baseRules, rulesByDifficulty } from './rules'
-export { SPEED_MAP, SIZE_MAP, MAX_LENGTH_MAP } from './constants'
+export {
+  SPEED_MAP,
+  SIZE_MAP,
+  MAX_LENGTH_MAP,
+  baseRules,
+  rulesByDifficulty,
+  BASE_SCORE_MAP,
+  PENALTY_MAP,
+} from './constants'
+export { generateSequence, playSequence } from './utils'
 
-export { BASE_SCORE_MAP, PENALTY_MAP } from './scores'
+export { checkClick } from './checkClick'
 
-export type { Difficulty, GameState } from './types'
+export type Difficulty = 'easy' | 'medium' | 'hard'
 
-export { generateSequence } from './utils'
+export type GameState = 'idle' | 'showing' | 'input' | 'paused'
