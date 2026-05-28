@@ -6,6 +6,7 @@ type Params = {
   difficulty: string
   shouldSave: boolean
   restartKey?: string | number
+  lastResult?: 'win' | 'lose' | 'idle'
 
   score?: number
   roundCount?: number
@@ -18,6 +19,7 @@ export function useGameResult({
   difficulty,
   shouldSave,
   restartKey,
+  lastResult,
   roundCount,
   bestScore,
 }: Params) {
@@ -79,7 +81,7 @@ export function useGameResult({
   // =========================
   useEffect(() => {
     sessionIdRef.current = ''
-  }, [difficulty, game, restartKey])
+  }, [difficulty, game, restartKey, lastResult])
 
   return { startSession }
 }
