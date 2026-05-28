@@ -44,7 +44,7 @@ export function useMemoryGame() {
   }
 
   // POPUP
-  const showScorePopup = (text: string) => {
+  const showPopup = (text: string) => {
     setScorePopup(text)
     setTimeout(() => setScorePopup(''), 1000)
   }
@@ -66,7 +66,7 @@ export function useMemoryGame() {
         firstCardWasSeen,
         difficulty,
         cards,
-        showScorePopup,
+        showPopup,
         setSeenCards,
         setCards,
         setFirstCard,

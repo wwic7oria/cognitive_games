@@ -10,7 +10,7 @@ type HandleClickParams = {
   firstCardWasSeen: boolean
   difficulty: Difficulty
   cards: Card[]
-  showScorePopup: (text: string) => void
+  showPopup: (text: string) => void
   setSeenCards: React.Dispatch<React.SetStateAction<number[]>>
   setCards: React.Dispatch<React.SetStateAction<Card[]>>
   setFirstCard: React.Dispatch<React.SetStateAction<Card | null>>
@@ -28,7 +28,7 @@ export function handleClick({
   firstCard,
   firstCardWasSeen,
   difficulty,
-  showScorePopup,
+  showPopup,
   setSeenCards,
   setCards,
   setFirstCard,
@@ -79,7 +79,7 @@ export function handleClick({
       c1WasSeen: currentFirstCardWasSeen,
       c2WasSeen: wasSeenBefore,
       difficulty,
-      showScorePopup,
+      showPopup,
       setCards,
       setScore,
       setResult,

@@ -18,7 +18,7 @@ const makeState = () => ({
   firstCardWasSeen: false,
   difficulty: 'easy' as const,
   cards: [baseCard],
-  showScorePopup: vi.fn(),
+  showPopup: vi.fn(),
 
   setSeenCards: vi.fn(),
   setCards: vi.fn(),

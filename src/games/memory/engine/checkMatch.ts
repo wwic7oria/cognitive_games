@@ -7,7 +7,7 @@ type CheckMatchParams = {
   c1WasSeen: boolean
   c2WasSeen: boolean
   difficulty: Difficulty
-  showScorePopup: (text: string) => void
+  showPopup: (text: string) => void
   setCards: React.Dispatch<React.SetStateAction<Card[]>>
   setScore: React.Dispatch<React.SetStateAction<number>>
   setResult: React.Dispatch<React.SetStateAction<'win' | 'idle'>>
@@ -22,7 +22,7 @@ export function checkMatch({
   c1WasSeen,
   c2WasSeen,
   difficulty,
-  showScorePopup,
+  showPopup,
   setCards,
   setScore,
   setResult,
@@ -46,7 +46,7 @@ export function checkMatch({
 
     scoreDelta = totalBonus
 
-    showScorePopup(isLucky ? `+${bonus}+5` : `+${bonus}`)
+    showPopup(isLucky ? `+${bonus}+5` : `+${bonus}`)
     // Пара отмечается как найденная
     setCards(prev =>
       prev.map(c => (c.value === c1.value ? { ...c, isMatched: true } : c)),
@@ -60,7 +60,7 @@ export function checkMatch({
     // Штраф, если одну из карт уже видели
     if (penalty > 0) {
       scoreDelta = -penalty
-      showScorePopup(`-${penalty}`)
+      showPopup(`-${penalty}`)
     }
 
     // Карты переворачиваются обратно
