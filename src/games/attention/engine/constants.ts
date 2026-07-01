@@ -1,14 +1,7 @@
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
 export type Shape = 'heart' | 'star' | 'rocket' | 'bolt' | 'fire' | 'cloud'
-export type Color =
-  | 'red'
-  | 'white'
-  | 'green'
-  | 'blue'
-  | 'yellow'
-  | 'purple'
-  | 'black'
+export type Color = 'red' | 'green' | 'blue' | 'yellow' | 'purple' | 'black'
 
 export const SIZE_MAP: Record<Difficulty, number> = {
   easy: 6,
@@ -32,7 +25,6 @@ export const SHAPES: Shape[] = [
 ]
 export const COLORS: Color[] = [
   'red',
-  'white',
   'green',
   'blue',
   'yellow',
@@ -51,7 +43,6 @@ export const SHAPE_EMOJI: Record<Shape, string> = {
 
 export const COLOR_EMOJI: Record<Color, string> = {
   red: '🔴',
-  white: '⚪',
   green: '🟢',
   blue: '🔵',
   yellow: '🟡',

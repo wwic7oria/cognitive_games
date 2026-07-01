@@ -142,4 +142,28 @@ describe('checkClick', () => {
 
     expect(set.setCurrentLength).toHaveBeenCalled()
   })
+
+  test('Не увеличивает длину кликов, если достигнут максимум', () => {
+    const set = makeSetters()
+
+    checkClick({
+      id: 2,
+      sequence: [1, 2],
+      userInput: [1],
+      gameState: 'input',
+
+      score: 0,
+      baseScore: 10,
+      penalty: 5,
+
+      currentLength: 5,
+      maxLength: 5,
+
+      showPopup: vi.fn(),
+
+      ...set,
+    })
+
+    expect(set.setCurrentLength).not.toHaveBeenCalled()
+  })
 })

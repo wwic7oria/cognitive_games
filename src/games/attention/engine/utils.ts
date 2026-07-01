@@ -1,38 +1,43 @@
 import { COLORS, SHAPES } from './constants'
 import type { AttentionItem } from './types'
 
-function randomShape() {
-  return SHAPES[Math.floor(Math.random() * SHAPES.length)]
-}
+const MAX_PER = 3
 
-function randomColor() {
-  return COLORS[Math.floor(Math.random() * COLORS.length)]
+function shuffle<T>(arr: T[]) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
 }
 
 export function generateItems(count: number): AttentionItem[] {
-  const items: AttentionItem[] = []
+  const maxShape = SHAPES.length * MAX_PER
+  const maxColor = COLORS.length * MAX_PER
+  const maxPossible = Math.max(maxShape, maxColor)
 
-  const shapeCount = new Map<string, number>()
-  const colorCount = new Map<string, number>()
-
-  for (let i = 0; i < count; i++) {
-    const shape = randomShape()
-    const color = randomColor()
-
-    const shapeUsed = shapeCount.get(shape) || 0
-    const colorUsed = colorCount.get(color) || 0
-
-    // Не больше 3 повторений одной формы или цвета
-    if (shapeUsed >= 3 || colorUsed >= 3) {
-      i--
-      continue
-    }
-
-    items.push({ shape, color })
-
-    shapeCount.set(shape, shapeUsed + 1)
-    colorCount.set(color, colorUsed + 1)
+  if (count > maxPossible) {
+    throw new Error(`Ошибка: сгенерировано ${count}, максимум ${maxPossible}`)
   }
 
-  return items
+  // FIX: сохраняем типы
+  const shapesPool = SHAPES.flatMap(s =>
+    Array(MAX_PER).fill(s),
+  ) as (typeof SHAPES)[number][]
+  const colorsPool = COLORS.flatMap(c =>
+    Array(MAX_PER).fill(c),
+  ) as (typeof COLORS)[number][]
+
+  shuffle(shapesPool)
+  shuffle(colorsPool)
+
+  const result: AttentionItem[] = []
+
+  for (let i = 0; i < count; i++) {
+    result.push({
+      shape: shapesPool[i],
+      color: colorsPool[i],
+    })
+  }
+
+  return result
 }
