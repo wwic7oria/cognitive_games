@@ -19,7 +19,6 @@ export function generateItems(count: number): AttentionItem[] {
     throw new Error(`Ошибка: сгенерировано ${count}, максимум ${maxPossible}`)
   }
 
-  // FIX: сохраняем типы
   const shapesPool = SHAPES.flatMap(s =>
     Array(MAX_PER).fill(s),
   ) as (typeof SHAPES)[number][]
